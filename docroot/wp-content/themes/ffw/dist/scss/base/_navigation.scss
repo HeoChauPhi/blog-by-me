@@ -1,0 +1,152 @@
+.block-navigation {
+  @include barlow;
+  font-size: rem(20px);
+
+  @include breakpoint(laptopDown) {
+    font-size: rem(26px);
+  }
+
+  .nav {
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li {
+        list-style: none;
+        position: relative;
+
+        a {
+          display: block;
+
+          &:hover {
+            color: $color-link-hover;
+          }
+        }
+
+        &.current-menu-item {
+          > a {
+            color: $color-link-hover;
+          }
+        }
+
+        @include breakpoint(laptopDown) {
+          border-bottom: rem(1px) solid $white;
+
+          &:last-of-type {
+            border: none;
+          }
+
+          a {
+            color: $white;
+            padding: rem(10px);
+
+            &:hover {
+              color: $color-link;
+            }
+          }
+
+          &.current-menu-item {
+            > a {
+              color: $white;
+            }
+          }
+        }
+      }
+    }
+
+    // Submenu
+    .nav-drop {
+      @include transition(all 0.5s ease);
+      background-color: $white;
+      left: 0;
+      min-width: rem(250px);
+      opacity: 0;
+      padding: 0;
+      position: absolute;
+      top: 80%;
+      visibility: hidden;
+      z-index: -9999;
+
+      > li {
+        > a {
+          border-bottom: rem(1px) solid $color-line;
+          padding: rem(10px);
+        }
+
+        &:last-of-type {
+          > a {
+            border: none;
+          }
+        }
+
+        // Submenu lvl2
+        > .nav-drop {
+          left: 80%;
+          top: 0;
+        }
+
+        &.menu-item-has-children:hover {
+          > .nav-drop {
+            @include transition(all 0.3s ease);
+            left: calc(100% + 1px);
+            opacity: 1;
+            visibility: visible;
+            z-index: 1;
+          }
+        }
+      }
+
+      @include breakpoint(laptopDown) {
+        background: transparent;
+        opacity: 1;
+        position: static;
+        visibility: visible;
+        z-index: 1;
+
+        .nav-drop {
+          border-top: rem(1px) solid $white;
+        }
+      }
+    }
+
+    // Main menu lvl 1
+    > ul {
+      @include breakpoint(laptop) {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+      }
+
+      > li {
+        @include breakpoint(laptop) {
+          margin-right: rem(15px);
+
+          > a {
+            padding-bottom: rem(10px);
+          }
+
+          &.menu-item-has-children {
+            border: none;
+
+            &:hover {
+              > .nav-drop {
+                @include transition(all 0.3s ease);
+                opacity: 1;
+                top: 100%;
+                visibility: visible;
+                z-index: 1;
+              }
+            }
+          }
+        }
+
+        &.menu-item-has-children {
+          > .nav-drop {
+            border-top: rem(1px) solid $white;
+          }
+        }
+      }
+    }
+  }
+}

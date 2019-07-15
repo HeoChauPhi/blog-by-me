@@ -1,11 +1,11 @@
 html {
-  @include lato;
+  @include asap;
   font-size: $base-font-size;
   line-height: 1.5;
 }
 
 body {
-  @include lato;
+  @include asap;
   color: $color-base;
   font-size: inherit;
   line-height: inherit;
@@ -19,9 +19,65 @@ a {
     cursor: pointer;
     text-decoration: none;
   }
+
+  &:focus,
+  &:active {
+    outline: none !important;
+    text-decoration: none;
+  }
 }
 
-img {
+img,
+video {
   height: auto;
   max-width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @include barlow;
+  color: $color-title;
+}
+
+select,
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+textarea {
+  background-color: $white;
+  border: rem(1px) solid $color-line;
+  color: $color-base;
+  font-size: rem(16px);
+  max-width: 100%;
+  padding: rem(4px 10px 5px 10px);
+
+  &:focus,
+  &:hover,
+  &:active,
+  &:-internal-autofill-selected {
+    background-color: $white !important;
+    border: rem(1px) solid rgba($black, .1);
+    outline: none !important;
+  }
+}
+
+select {
+  font-weight: 700;
+}
+
+table {
+  border: none;
+
+  tr {
+    border: none;
+  }
+
+  th,
+  td {
+    border-color: $color-line;
+    border-style: solid;
+    border-width: rem(0 0 1px);
+    padding: rem(10px 0);
+  }
 }

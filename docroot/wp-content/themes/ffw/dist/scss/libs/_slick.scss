@@ -98,3 +98,33 @@
 .slick-arrow.slick-hidden {
   display: none;
 }
+
+.slick-arrow {
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  padding: 0;
+  position: absolute;
+  right: 15px;
+  text-indent: -999em;
+  top: -30px;
+  width: 30px;
+
+  &.slick-prev {
+    background-image: url(../images/icons/chevron-left.svg);
+    right: 45px;
+  }
+
+  &.slick-next {
+    background-image: url(../images/icons/chevron-right.svg);
+  }
+
+  &:hover,
+  &:active,
+  &:focus {
+    outline: none !important;
+  }
+}

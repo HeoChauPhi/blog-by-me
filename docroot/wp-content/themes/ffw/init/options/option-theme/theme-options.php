@@ -79,6 +79,15 @@ class FFWSettingsPage {
       'ffw_google_api',
       'ffw_google_api_key'
     );
+
+    add_settings_field(
+      'ffw_body_content_code',
+      __('Body Code', 'ffw_theme'),
+      array( $this, 'ffw_form_textarea' ), // Callback
+      'ffw-setting-admin', // Page
+      'ffw_google_api',
+      'ffw_body_content_code'
+    );
   }
 
   /**
@@ -91,6 +100,9 @@ class FFWSettingsPage {
 
     if( isset( $input['ffw_google_api_key'] ) )
       $new_input['ffw_google_api_key'] = sanitize_text_field( $input['ffw_google_api_key'] );
+
+    if( isset( $input['ffw_body_content_code'] ) )
+      $new_input['ffw_body_content_code'] = sanitize_text_field( htmlentities($input['ffw_body_content_code']) );
 
     return $new_input;
   }
@@ -121,6 +133,6 @@ class FFWSettingsPage {
 
   public function ffw_form_textarea($name) {
     $value = isset($this->options[$name]) ? esc_attr($this->options[$name]) : '';
-    printf('<textarea cols="100%%" rows="3" type="textarea" id="form-id-%s" name="ffw_board_settings[%s]">%s</textarea>', $name, $name, $value);
+    printf('<textarea cols="100%%" rows="8" type="textarea" id="form-id-%s" name="ffw_board_settings[%s]">%s</textarea>', $name, $name, $value);
   }
 }

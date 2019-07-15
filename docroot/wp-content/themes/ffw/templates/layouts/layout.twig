@@ -43,5 +43,9 @@
 
       <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&#38;key={{ google_api_key }}&#38;libraries=places" type="text/javascript"></script>
     </div>
+
+    {% if body_content_code %}
+      {{ fn('htmlspecialchars_decode', body_content_code) }}
+    {% endif %}
   </body>
 </html>

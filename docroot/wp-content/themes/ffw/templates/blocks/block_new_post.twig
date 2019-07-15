@@ -1,0 +1,22 @@
+<div class="block-news {% if component_class %}{{ component_class }}{% endif %}">
+  <div class="container">
+    <h2 class="block-title">{{ block_title }}</h2>
+
+    <div class="block-inner">
+      <div class="row news-list news-slide-carousel">
+      {% for post in posts %}
+        <div class="news-item-wrapper col-md-3">
+          <div class="news-item">
+            <div class="post-media" style="background-image: url({{ post.thumbnail.src }});"><img src="{{ post.thumbnail.src }}"></div>
+            <div class="post-info">
+              <h3 class="post-title">{{ post.title }}</h3>
+              <div class="post-summary">{{ post.date }}</div>
+            </div>
+            <a href="{{ post.link }}" class="post-link"></a>
+          </div>
+        </div>
+      {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

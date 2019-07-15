@@ -1,0 +1,31 @@
+<div class="block-hashtag">
+  <div class="container">
+    <h2 class="block-title">{{ block_title }}</h2>
+
+    <div class="block-inner">
+      {% if hashtag_list %}
+      <div class="block-hashtag-list">
+        {% for item in hashtag_list %}
+          <a href="{{ item.hashtag_url }}" target="_blank">{{ item.hashtag_name }}</a>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if hashtag_images %}
+      <div class="block-hashtag-media row">
+        {% for item in hashtag_images %}
+          <div class="hashtag-media-item col-md-4">
+            <div class="hashtag-media-inner">
+              <div class="image-hashtag-media" style="background-image: url({{ item.hashtag_image.url }});" title="{{ item.hashtag_image.name }}"><img src="{{ item.hashtag_image.url }}" alt></div>
+              <div class="hashtag-media-action">
+                <a class="icon-fancybox hashtag-action-item" data-fancybox="image-hashtag-media-component-{{ component_id }}" href="{{ item.hashtag_image.url }}"><i class="fas fa-expand-arrows-alt"></i></a>
+                <a class="icon-hashtag-link hashtag-action-item" href="{{ item.hashtag_image_url }}" target="_blank"><i class="fas fa-link"></i></a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 {
     "key": "group_5be3222719959",
-    "title": "Feature Slide for Front page",
+    "title": "Feature for Front page",
     "fields": [
         {
             "key": "field_5d19bc3956540",
@@ -16,8 +16,9 @@
                 "id": ""
             },
             "choices": {
-                "post_slide": "Post Slider",
-                "Custom_slide": "Custom Slider"
+                "image_banner": "Image Banner",
+                "video_file_banner": "Video File Banner",
+                "video_url_banner": "Video URL Banner"
             },
             "default_value": [],
             "allow_null": 0,
@@ -28,10 +29,10 @@
             "placeholder": ""
         },
         {
-            "key": "field_5d19bc7356541",
-            "label": "Post Slide Item",
-            "name": "post_slide_item",
-            "type": "post_object",
+            "key": "field_5d206d3c1e0a4",
+            "label": "Feature Image Banner",
+            "name": "feature_image_banner",
+            "type": "image",
             "instructions": "",
             "required": 0,
             "conditional_logic": [
@@ -39,7 +40,7 @@
                     {
                         "field": "field_5d19bc3956540",
                         "operator": "==",
-                        "value": "post_slide"
+                        "value": "image_banner"
                     }
                 ]
             ],
@@ -48,20 +49,22 @@
                 "class": "",
                 "id": ""
             },
-            "post_type": [
-                "post"
-            ],
-            "taxonomy": "",
-            "allow_null": 0,
-            "multiple": 1,
-            "return_format": "id",
-            "ui": 1
+            "return_format": "array",
+            "preview_size": "medium",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": ""
         },
         {
-            "key": "field_5d19bc9c56542",
-            "label": "Custom Slider Group",
-            "name": "custom_slider_group",
-            "type": "repeater",
+            "key": "field_5d206e3d1e0a6",
+            "label": "Feature File Banner",
+            "name": "feature_file_banner",
+            "type": "file",
             "instructions": "",
             "required": 0,
             "conditional_logic": [
@@ -69,7 +72,7 @@
                     {
                         "field": "field_5d19bc3956540",
                         "operator": "==",
-                        "value": "Custom_slide"
+                        "value": "video_file_banner"
                     }
                 ]
             ],
@@ -78,99 +81,81 @@
                 "class": "",
                 "id": ""
             },
-            "collapsed": "",
-            "min": 1,
-            "max": 0,
-            "layout": "table",
-            "button_label": "Add Slide Item",
-            "sub_fields": [
-                {
-                    "key": "field_5be3277457bb9",
-                    "label": "Slide Image",
-                    "name": "slide_image",
-                    "type": "image",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "return_format": "array",
-                    "preview_size": "thumbnail",
-                    "library": "all",
-                    "min_width": "",
-                    "min_height": "",
-                    "min_size": "",
-                    "max_width": "",
-                    "max_height": "",
-                    "max_size": "",
-                    "mime_types": ""
-                },
-                {
-                    "key": "field_5d19bd1f56544",
-                    "label": "Slide Title",
-                    "name": "slide_title",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": "",
-                    "maxlength": ""
-                },
-                {
-                    "key": "field_5d19bd2756545",
-                    "label": "Slide Description",
-                    "name": "slide_description",
-                    "type": "textarea",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "placeholder": "",
-                    "maxlength": "",
-                    "rows": 3,
-                    "new_lines": "br"
-                },
-                {
-                    "key": "field_5d19bd3c56546",
-                    "label": "Slide URL",
-                    "name": "slide_url",
-                    "type": "url",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "placeholder": ""
-                }
-            ]
+            "return_format": "array",
+            "library": "all",
+            "min_size": "",
+            "max_size": "",
+            "mime_types": ""
+        },
+        {
+            "key": "field_5d206e0c1e0a5",
+            "label": "Feature URL Banner",
+            "name": "feature_url_banner",
+            "type": "oembed",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_5d19bc3956540",
+                        "operator": "==",
+                        "value": "video_url_banner"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "width": 300,
+            "height": 250
+        },
+        {
+            "key": "field_5d29b37cd8f87",
+            "label": "Banner Name",
+            "name": "banner_name",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_5d29b387d8f88",
+            "label": "Banner Description",
+            "name": "banner_description",
+            "type": "textarea",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "maxlength": "",
+            "rows": 3,
+            "new_lines": "br"
         }
     ],
     "location": [
         [
             {
-                "param": "page_type",
+                "param": "page_template",
                 "operator": "==",
-                "value": "front_page"
+                "value": "page-templates\/template-landing-page.php"
             }
         ]
     ],
@@ -184,5 +169,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1561967957
+    "modified": 1563014045
 }

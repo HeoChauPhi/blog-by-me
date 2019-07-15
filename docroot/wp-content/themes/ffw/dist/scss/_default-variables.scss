@@ -17,38 +17,35 @@ $mobile: 480px;
 
 // Set the proper directory for the Bootstrap Glyphicon font.
 $icon-font-path: '../bootstrap/assets/fonts/bootstrap/';
-$container-large-desktop: 1170px !default;
+$screen-lg: 1366px !default;
+$container-large-desktop: 1366px !default;
 
 // Fonts.
-@mixin opensans {
-  font-family: 'Open Sans', sans-serif;
+@mixin asap {
+  font-family: 'Asap', sans-serif;
 }
 
-@mixin lato {
-  font-family: 'Lato', sans-serif;
+@mixin barlow {
+  font-family: 'Barlow Semi Condensed', sans-serif;
 }
 
-@mixin myriadProBold {
-  font-family: 'MyriadProBold', sans-serif;
-}
-
-$base-font-size: 14px;
+$base-font-size: 16px;
 
 // Color.
-$red: #26baff;
-$red-dark: #232044;
+$orange: #f61a15;
+$blue: #7db8bd;
 $black: #000000;
 $white: #ffffff;
 
-$color-primary: $red;
-$color-second: $red-dark;
+$color-primary: $orange;
+$color-second: $blue;
 
 $gray-3b: #3b3b3b;
 
 // Text color
 $color-base: $gray-3b;
 $color-link: $color-primary;
-$color-link-hover: $color-primary;
+$color-link-hover: $color-second;
 $color-title: $color-second;
 
 // bg color

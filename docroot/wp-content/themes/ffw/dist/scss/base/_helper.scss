@@ -27,7 +27,7 @@
 }
 
 .bg-overlay {
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgba(0,0,0,0.6);
   bottom: 0;
   left: 0;
   opacity: 0.8;
@@ -35,6 +35,23 @@
   right: 0;
   top: 0;
   z-index: -2;
+}
+
+%btn,
+.btn {
+  @include barlow;
+  @include transition(all 0.3s ease);
+  background-color: transparent;
+  border-radius: 0;
+  border: rem(2px) solid $black;
+  color: $color-base;
+  padding: rem(5px 15px 6px 15px);
+  text-transform: capitalize;
+
+  &:hover {
+    background-color: $black;
+    color: $white;
+  }
 }
 
 .button-scroll-down {
@@ -72,4 +89,39 @@
 @keyframes controlButtonown {
   from {top: rem(10px);}
   to {top: rem(20px);}
+}
+
+.animation-element {
+  opacity: 0;
+}
+
+form {
+  .form-item {
+    margin-bottom: rem(7px);
+
+    select,
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+
+  .form-action {
+    button,
+    input[type="submit"] {
+      @extend %btn;
+      border-color: $white;
+      color: $white;
+
+      &:hover {
+        border-color: $color-link-hover;
+        color: $color-link-hover;
+      }
+    }
+  }
 }

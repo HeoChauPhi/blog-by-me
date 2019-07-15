@@ -1,29 +1,43 @@
 {% block header %}
-  <header id="header" class="header">
-    <div class="header-wrapper">
-      <div class="header-top">
+  <header id="header" class="header-wrapper">
+      {#<div class="header-top">
         <div class="container">
           {% include 'block-user.twig' %}
         </div>
-      </div>
+      </div>#}
 
-      <div id="header-navigation" class="header--navigation">
-        <div class="container">
-          <div class="header-logo">
-            <a href="{{ site.url }}" class="logo">
-              <img alt="{{ site.name }}" src="{{ site_logo }}" alt="{{ site.name }}">
-            </a>
+      <div class="container">
+        <div id="header-navigation" class="header-navigation">
+          <div class="header-layout-left">
+            <div class="header-logo">
+              <a href="{{ site.url }}" class="logo">
+                <img alt="{{ site.name }}" src="{{ site_logo }}" alt="{{ site.name }}">
+              </a>
+            </div>
+
+            {% block navigation %}
+              <div class="block-navigation hidden-on-mobile mobile-navigation">{% include 'navigation.twig' %}</div>
+            {% endblock %}
           </div>
 
-          {% block navigation %}
-            <div class="block-navigation">{% include 'navigation.twig' %}</div>
-          {% endblock %}
+          <div class="header-layout-right">
+            {% for key, header in fn('array_unset', header_widget, '_multiwidget') %}
+              {% if fn('get_field', 'header_social', 'widget_header_widget-' ~ key) %}
+                {% set socials = fn('get_field', 'header_social', 'widget_header_widget-' ~ key ) %}
+                
+                {% include 'block-social.twig' with {'socials': socials} only %}
+              {% endif %}
+
+              {% if fn('get_field', 'header_search_option', 'widget_header_widget-' ~ key) %}
+                {% include 'searchform.twig' %}
+              {% endif %}
+            {% endfor %}
+          </div>
         </div>
 
         {#% if global_ppl %}
         {% include 'custom-ppl.twig' %}
         {% endif %#}
       </div>
-    </div>
   </header>
 {% endblock %}

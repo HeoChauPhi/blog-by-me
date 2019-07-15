@@ -138,8 +138,10 @@ function acfwidget($name, $widgetid) {
           default:
             $field['index'] = $index;
 
-            if ( strpos($field['component_class'], 'col-') === false ) {
+            if ( strpos($field['component_class'], 'col-') === false && $acffield_count < 4) {
               $field['layout'] = 12 / $acffield_count;
+            } else {
+              $field['layout'] = 4;
             }
             //print_r($field);
             try {
@@ -376,6 +378,24 @@ function flexible_content($name) {
           }
           break;
 
+        case 'block_new_post':
+          $args = array(
+            'post_type' => $field['new_post_type'],
+            'cat' => $field['new_post_by_category'],
+            'post_status'     => 'publish',
+            'orderby' => 'cat'
+          );
+
+          $posts = Timber::get_posts($args);
+          $field['posts'] = $posts;
+
+          try {
+            Timber::render($layout . '.twig', $field);
+          } catch (Exception $e) {
+            echo 'Could not find a twig file for layout type: ' . $layout . '<br>';
+          }
+          break;
+
         case 'map_block':
           $theme_options = get_option('ffw_board_settings');
           $google_api_key = $theme_options['ffw_google_api_key'];
@@ -604,8 +624,10 @@ function ffw_twig_data($data){
   // Theme option
   $theme_options                = get_option('ffw_board_settings');
   $google_api_key               = $theme_options['ffw_google_api_key'];
+  $body_content_code = $theme_options['ffw_body_content_code'];
 
   $data['google_api_key']       = $google_api_key;
+  $data['body_content_code'] = $body_content_code;
 
   // Get PPL Plugin
   if ( !empty($GLOBALS["polylang"]) ) {

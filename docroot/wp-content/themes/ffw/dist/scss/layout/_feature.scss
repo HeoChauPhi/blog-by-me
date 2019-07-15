@@ -1,0 +1,47 @@
+.feature {
+  position: relative;
+
+  &.front-banner {
+    height: rem(550px);
+  }
+
+  .feature-media-videofile {
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    width: 100%;
+
+    video {
+      height: 100%;
+      margin: 0 auto;
+      width: auto;
+    }
+  }
+
+  .feature-content-wrapper {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    z-index: 1;
+  }
+
+  .feature-content-inner {
+    text-align: center;
+  }
+
+  .feature-title {
+    color: $white;
+    font-size: rem(90px);
+    font-weight: 700;
+    margin: rem(0 0 30px);
+  }
+
+  .feature-description {
+    color: $white;
+    font-size: rem(28px);
+  }
+}

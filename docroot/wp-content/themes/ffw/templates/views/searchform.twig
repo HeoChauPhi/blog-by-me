@@ -1,11 +1,10 @@
 {% block searchform %}
-  <div class="block-search">
-    <span class="js-toogle--search icon-cross"></span>
-    <span class="js-toogle--search icon-search"></span>
+  <div class="block-search hidden-on-mobile mobile-navigation">
+    <span class="navigation-close hidden-on-desktop"><i class="fas fa-times"></i></span>
 
     <form class="searchform" role="search" method="get" id="searchform" action="{{site.url}}/">
       <input class="form-text" type="text" value="{{function('get_search_query')}}" name="s" id="s" placeholder="{{ __('Search', 'ffw_theme')}}">
-      <button type="submit" id="searchsubmit" value="Search" class="button postfix">{{ __('Search', 'ffw_theme')}}</button>
+      <button type="submit" id="searchsubmit" value="Search" class="button postfix"><i class="fas fa-search"></i></button>
     </form>
   </div>
 {% endblock %}

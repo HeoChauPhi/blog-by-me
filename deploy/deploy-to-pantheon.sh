@@ -5,7 +5,7 @@ txtgrn=$(tput setaf 2) # Green
 txtrst=$(tput sgr0) # Text reset.
 
 COMMIT_MESSAGE="Deploy by $(git config --get user.name), $(git rev-parse --abbrev-ref HEAD) ($(git rev-parse --short HEAD))"
-PANTHEON_GIT_URL="ssh://codeserver.dev.64a7cd70-740f-419c-b3d3-889d3294581c@codeserver.dev.64a7cd70-740f-419c-b3d3-889d3294581c.drush.in:2222/~/repository.git"
+PANTHEON_GIT_URL="ssh://codeserver.dev.d5af44b0-0349-455a-aaac-a7afdb91226c@codeserver.dev.d5af44b0-0349-455a-aaac-a7afdb91226c.drush.in:2222/~/repository.git"
 
 # If the Pantheon git directory does not exist.
 if [ ! -d ".pantheon" ]

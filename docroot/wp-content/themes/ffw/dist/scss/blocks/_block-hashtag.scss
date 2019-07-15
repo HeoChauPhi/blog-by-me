@@ -1,0 +1,104 @@
+.block-hashtag {
+  margin-bottom: rem(45px);
+
+  .block-hashtag-list {
+    text-align: center;
+    margin-bottom: rem(20px);
+
+    > a {
+      border: rem(1px) solid $color-link;
+      display: inline-block;
+      margin: rem(0 3px 5px 3px);
+      padding: rem(3px 10px);
+
+      &:hover {
+        border-color: $color-link-hover;
+      }
+    }
+  }
+
+  .block-hashtag-media {
+    display: none;
+
+    &.slick-slider {
+      display: block;
+    }
+  }
+
+  .hashtag-media-item {
+    .hashtag-media-inner {
+      height: rem(425px);
+      overflow: hidden;
+      position: relative;
+
+      &:hover {
+        .image-hashtag-media {
+          @include transform(scale(1.1));
+        }
+
+        .hashtag-action-item {
+          visibility: visible;
+
+          &.icon-fancybox {
+            top: 0;
+          }
+
+          &.icon-hashtag-link {
+            bottom: 0;
+          }
+        }
+      }
+    }
+
+    .image-hashtag-media {
+      @include transition(transform 0.3s ease);
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      height: 100%;
+
+      img {
+        opacity: 0;
+        visibility: hidden;
+        z-index: -1;
+      }
+    }
+
+    .hashtag-media-action {
+      align-items: center;
+      bottom: 0;
+      display: flex;
+      justify-content: center;
+      left: 0;
+      position: absolute;
+      right: 0;    
+      top: 0;
+    }
+
+    .hashtag-action-item {
+      @include transition(all 0.3s ease);
+      align-items: center;
+      background-color: rgba($black, 0.5);
+      display: flex;
+      font-size: rem(30px);
+      height: 100%;
+      position: absolute;
+      visibility: hidden;
+      width: 50%;
+
+      &.icon-fancybox {
+        justify-content: flex-end;
+        left: 0;
+        padding-right: rem(20px);
+        top: 100%;
+      }
+
+      &.icon-hashtag-link {
+        justify-content: flex-start;
+        padding-left: rem(20px);
+        right: 0;
+        bottom: 100%;
+      }
+    }
+  }
+}

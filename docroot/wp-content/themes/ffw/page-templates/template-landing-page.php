@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Landing page
+ * Template Name: Template for Front page
  *
  * @package WordPress
  * @subpackage FFW
@@ -11,4 +11,4 @@ $context = Timber::get_context();
 $post = new TimberPost();
 $context['post'] = $post;
 
-Timber::render( 'template-landing-page.twig', $context );
+Timber::render( 'template-front-page.twig', $context );

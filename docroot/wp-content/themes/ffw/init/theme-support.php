@@ -10,8 +10,7 @@ add_theme_support( 'menus' );
 add_action('init', 'ffw_menu');
 function ffw_menu() {
   register_nav_menus(array (
-    'main'          => 'Main Menu',
-    'footer'        => 'Footer Menu'
+    'main'          => 'Main Menu'
   ));
 }
 

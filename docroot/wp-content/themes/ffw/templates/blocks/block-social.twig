@@ -1,0 +1,9 @@
+<div class="block-social hidden-on-mobile mobile-navigation">
+  <span class="navigation-close hidden-on-desktop"><i class="fas fa-times"></i></span>
+
+  <ul class="social-list">
+    {% for item in socials %}
+      <li class="social-item"><a href="{{ item.social_url }}">{{ item.social_icon }}</a></li>
+    {% endfor %}
+  </ul>
+</div>

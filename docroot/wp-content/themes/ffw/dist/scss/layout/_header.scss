@@ -1,0 +1,152 @@
+.header-wrapper {
+  position: relative;
+  z-index: 4;
+}
+
+@include breakpoint(laptop) {
+  .header-navigation {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .header-layout-left,
+  .header-layout-right {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  .header-layout-left {
+    align-items: flex-end;
+  }
+}
+
+.header-logo {
+  text-align: center;
+
+  .logo {
+    display: block;
+    margin: 0 auto;
+    max-width: rem(150px);
+    padding: rem(10px 0);
+  }
+
+  @include breakpoint(laptop) {
+    margin-right: rem(40px);
+  }
+}
+
+/* Block Social */
+.block-social {
+  .social-list {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      list-style: none;
+      margin-right: rem(15px);
+
+      @include breakpoint(laptopDown) {
+        margin: rem(0 10px);
+
+        a {
+          align-items: center;
+          background-color: $white;
+          border-radius: rem(500px);
+          display: flex;
+          font-size: rem(22px);
+          height: rem(40px);
+          justify-content: center;
+          width: rem(40px);
+        }
+      }
+    }
+  }
+}
+
+/* Block Search */
+.block-search {
+  .searchform {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+
+    input[type="text"] {
+      border-width: rem(0 0 1px);
+      font-size: rem(12px);
+      max-width: 100%;
+      text-align: left;
+      text-transform: uppercase;
+      width: rem(150px);
+    }
+
+    button {
+      background-color: transparent;
+      border: none;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      width: rem(40px);
+    }
+
+    @include breakpoint(laptopDown) {
+      input[type="text"] {
+        background: transparent;
+        color: $white;
+        opacity: 1;
+
+        ::placeholder,
+        :-ms-input-placeholder,
+        ::-ms-input-placeholder {
+          color: $white;
+          opacity: 1;
+        }
+
+        &:focus,
+        &:active,
+        &:hover {
+          background: transparent !important;
+          border-bottom-color: $color-link;
+        }
+      }
+
+      button {
+        color: $white;
+      }
+    }
+  }
+}
+
+.mobile-navigation {
+  @include breakpoint(laptopDown) {
+    align-items: center;
+    background: rgba($black,.9);
+    bottom: 0;
+    justify-content: center;
+    left: 0;
+    padding: rem(45px 15px);
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 1;
+
+    .navigation-close {
+      color: $white;
+      cursor: pointer;
+      font-size: rem(40px);
+      line-height: 0;
+      position: absolute;
+      right: rem(15px);
+      top: rem(40px);
+    }
+
+    &.menu-show {
+      display: flex;
+    }
+  }
+}
