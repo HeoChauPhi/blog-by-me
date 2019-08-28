@@ -1,0 +1,23 @@
+{% if return_items %}
+<div class="block-post-slide {% if component_class %}{{ component_class }}{% endif %}">
+  <div class="container">
+    <div class="block-post-slide-header">
+      <h2 class="block-title">{{ block_title }}</h2>
+
+      {% if term %}
+        <a href="{{ fn('get_term_link', term) }}" class="view-more">{{ pll_e('View more') }} <i class="fas fa-angle-double-right"></i></a>
+      {% elseif filter_custom_posts.custom_link %}
+        <a href="{{ filter_custom_posts.custom_link.url }}" {% if filter_custom_posts.custom_link.target %}target="_blank"{% endif %} class="view-more">{{ filter_custom_posts.custom_link.title }} <i class="fas fa-angle-double-right"></i></a>
+      {% endif %}
+    </div>
+
+    <div class="block-inner">
+      <div class="row post-list post-slide-carousel">
+      {% for item in return_items %}
+        {% include 'post-item.twig' with {'post': item, 'classes': 'col-md-4 news-item-wrapper'} %}
+      {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}

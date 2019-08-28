@@ -1,0 +1,45 @@
+.block-image-text {
+  margin-bottom: rem(35px);
+
+  .block-title {
+    text-align: left;
+  }
+
+  .block-layout {
+    @include breakpoint(colmd) {
+      display: flex;
+      justify-content: center;
+
+      &.img_text {
+        .layout-image {
+          padding-right: rem(30px);
+        }
+
+        .layout-text {
+          padding-left: rem(30px);
+        }
+      }
+
+      &.text_img {
+        .layout-image {
+          order: 2;
+          padding-left: rem(30px);
+        }
+
+        .layout-text {
+          order: 1;
+          padding-right: rem(30px);
+        }
+      }
+    }
+  }
+
+  .layout-image,
+  .layout-text {
+    flex: 1;
+  }
+
+  .layout-image {
+    margin-bottom: rem(15px);
+  }
+}

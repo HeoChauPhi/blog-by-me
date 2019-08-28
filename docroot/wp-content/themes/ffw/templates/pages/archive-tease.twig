@@ -1,11 +1,10 @@
-{% block content %}
-  <article class="post post-{{ post.post_type }}">
-    <div class="post-picture">
-      <a href="{{post.link}}"><img src="{{post.thumbnail.src}}" class="feature" /></a>
+<article class="post-item col-md-4 {{ fn('get_post_class', classes, post.ID)|join(' ') }}">
+  <div class="post-item-inner">
+    <div class="post-media" style="background-image: url({{ fn('get_the_post_thumbnail_url', post.ID) }});"><img src="{{ fn('get_the_post_thumbnail_url', post.ID) }}"></div>
+    <div class="post-body">
+      <h3 class="post-title"><a href="{{ fn('get_permalink', post.ID) }}">{{ fn('get_the_title', post.ID) }}</a></h3>
+      <div class="post-summary">{{ fn('get_the_date') }}</div>
     </div>
-    <div class="post-content">
-      <h3><a href="{{post.link}}">{{ post.title }}</a></h3>
-      {{post.content|excerpt(30)}}
-    </div>
-  </article>
-{% endblock %}
+    <a href="{{ fn('get_permalink', post.ID) }}" class="post-link"></a>
+  </div>
+</article>

@@ -1,6 +1,6 @@
 {
     "key": "group_5d206f353b5a6",
-    "title": "Group Header Blocks",
+    "title": "Group Header Components",
     "fields": [
         {
             "key": "field_5d206f5e01e7d",
@@ -105,5 +105,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1562406921
+    "modified": 1566970054
 }

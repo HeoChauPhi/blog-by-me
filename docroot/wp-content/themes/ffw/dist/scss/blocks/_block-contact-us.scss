@@ -1,0 +1,24 @@
+.block-contact-form {
+  .contact-info {
+    margin-bottom: rem(40px);
+    word-break: break-word;
+  }
+
+  .contact-info-item {
+    margin-bottom: rem(15px);
+  }
+}
+
+.contact-info-form-wrapper {
+  .form-action {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    
+    input[type="submit"] {
+      border-color: $black;
+      color: $color-base;
+      padding: rem(7px 30px);
+    }
+  }
+}

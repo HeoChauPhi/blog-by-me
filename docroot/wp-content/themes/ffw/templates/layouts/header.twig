@@ -29,7 +29,11 @@
               {% endif %}
 
               {% if fn('get_field', 'header_search_option', 'widget_header_widget-' ~ key) %}
-                {% include 'searchform.twig' %}
+                {#% include 'searchform.twig' %#}
+                <div class="block-search-form block-search hidden-on-mobile mobile-navigation">
+                  <span class="navigation-close hidden-on-desktop"><i class="fas fa-times"></i></span>
+                  {{ fn('shortcode', '[wpdreams_ajaxsearchlite]') }}
+                </div>
               {% endif %}
             {% endfor %}
           </div>

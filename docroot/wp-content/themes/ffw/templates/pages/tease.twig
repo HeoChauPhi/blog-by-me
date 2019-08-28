@@ -1,29 +1,66 @@
-<div class="block-content top-translation">
-  <div class="container-wide">
-    <div class="block-content__wrappre">
-      <div class="block-main-content">
-        <div class="date align--center">{{ post.date }}</div>
-        {% if post.get_field('summary') %}
-        <div class="sub-page-title">{{ post.get_field('summary') }}</div>
-        {% endif %}
-        {{ function('shortcode', '[share_buttons]') }}
-        <div class="block-content__body">{{ post.content|shortcodes }}</div>
+<div class="signle-wrapper">
+  <div class="container">
+    <div class="signle-wrapper">
+      {% if fn('get_the_excerpt') %}
+      <div class="post-excerpt">{{ fn('get_the_excerpt') }}</div>
+      {% endif %}
+
+      <div class="single-content-body">{{ post.content|shortcodes }}</div>
+
+      {% if fn('get_the_tags', post.ID) %}
+      <div class="post-tags">
+        {% for tag in fn('get_the_tags', post.ID) %}
+          {% spaceless %}
+            <a href="{{ fn('get_tag_link', tag.term_id) }}">{{ tag.name }}</a>
+          {% endspaceless %}
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="post-social-action">
+        <div class="post-like">
+          <i class="fas fa-heart"></i>
+          {% if post.get_field('post_like') %}
+          <span class="post-like-number">{{ post.get_field('post_like') }}</span>
+          {% else %}
+          <span class="post-like-number">{{ fn('rand', 30, 99) }}</span>
+          {% endif %}
+        </div>
+        {{ fn('shortcode', '[share_buttons print_icon=0]') }}
+      </div>
+
+      <div class="post-nav-link">
+        <div class="post-nav-link-item post-nav-prev">
+          <label>{{ pll_e('Previous Post') }}</label>
+          {{ fn('previous_post_link', '%link') }}
+        </div>
+        <div class="post-nav-link-item post-nav-next">
+          <label>{{ pll_e('Next Post') }}</label>
+          {{ fn('next_post_link', '%link') }}
+        </div>
       </div>
     </div>
+
+    {% if fn('related', 'category') %}
+      <div class="block-related-post block-post-slide">
+        <div class="container-inner">
+          <h3 class="related-title block-title">{{ pll_e('Related post') }}</h3>
+          <div class="post-related row post-list post-slide-carousel">
+            {% for item in fn('related', 'category', 16) %}
+              {% include 'post-item.twig' with {'post': item, 'classes': 'col-md-4 news-item-wrapper'} %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if fn('comments_open') %}
+      <div class="block-comment-wrapper">
+        <div class="container-inner">
+          {% include 'comments.twig' with {'default_avatar': default_avatar} %}
+          {{ fn('comment_form') }}
+        </div>
+      </div>
+    {% endif %}
   </div>
 </div>
-
-{#% if related('category') %}
-  <h3 class="related-title block-title">Related post</h3>
-  <ul class="post-related">
-    {% for post in function('related', 'category') %}
-      <li><a href="{{post.link}}">{{post.title}}</a></li>
-    {% endfor %}
-  </ul>
-{% endif %#}
-
-{#% if function('comments_open') %}
-{% include 'comments.twig' %}
-{{ function('comment_form') }}
-{% endif %#}
-

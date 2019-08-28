@@ -1,5 +1,5 @@
 {% if fn('is_front_page') %}
-  <div id="feature" class="feature front-banner" style="height: 550px;">
+  <div id="feature" class="feature front-banner">
     {#{ post.get_field('feature_slide_type') }#}
     {% set banner_type = post.get_field('feature_slide_type') %}
 
@@ -31,18 +31,51 @@
   </div>
 {% else %}
     <div id="feature" class="feature">
-      <div class="feature-media parallax-window" data-parallax="scroll" data-image-src="{{ post.get_field('feature_banner').url }}" title="{{ post.get_field('feature_banner').title|replace({'-': ' ', '_': ' '}) }}"></div>
-      <div class="container">
-
       {% if fn('is_page') %}
-        {% if title_option != "on" %}
-          <h1 id="page-title">{{ post.title }}</h1>
-        {% endif %}
+        {% set feature_banner = post.get_field('feature_banner').url %}
       {% else %}
-        <h1 id="page-title">{{ post.title }}</h1>
+        {% set feature_banner = post.thumbnail.src %}
       {% endif %}
-      
-      {% include 'breadcrumb.twig' %}
+      <div class="feature-media parallax-window" data-parallax="scroll" data-image-src="{{ feature_banner }}"></div>
+
+      <div class="feature-content-wrapper">
+        <div class="container">
+          <div class="feature-content-inner">
+
+          {% if fn('is_page') %}
+            {% if title_option != "on" %}
+              <h1 id="page-title">{{ post.title }}</h1>
+            {% endif %}
+            {% include 'breadcrumb.twig' %}
+          {% else %}
+            <h1 id="page-title">{{ post.title }}</h1>
+            <div class="post-info">
+              <div class="post-author">
+                {% set user_data = fn('get_userdata', post.post_author).data %}
+                <div class="post-author-avatar"><img src="{{ fn('get_field', 'user_avatar', 'user_' ~ user_data.ID).sizes.thumbnail }}" alt></div>
+                <div class="post-author-name"><a href="{{ fn('get_author_posts_url', user_data.ID) }}">{{ user_data.display_name }}</a></div>
+              </div>
+              <span class="post-info-dash"></span>
+              <div class="post-date">
+                {{ fn('get_the_date', 'F j, Y', post.ID) }}
+              </div>
+              <span class="post-info-dash"></span>
+              {% if fn('get_the_category', post.ID) %}
+              <div class="post-categories">
+                {% for cat in fn('get_the_category', post.ID) %}
+                  {% spaceless %}
+                    <a href="{{ fn('get_category_link', cat.term_id) }}">{{ cat.name }}</a>
+                    {% if loop.last is empty %}<span>, </span>{% endif %}
+                  {% endspaceless %}
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+          {% endif %}
+          
+          </div>
+        </div>
       </div>
+      <div class="bg-overlay"></div>
     </div>
 {% endif %}

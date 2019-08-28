@@ -1,23 +1,47 @@
 {% extends 'layout.twig' %}
 
-{% block content %}
-  {% include 'searchform.twig' %}
-
-  <div class="search-result">
-    <div class="container-wide search-result__inner">
-    {% if posts %}
-    {% for post in posts %}
-      <div class="search-result__item">
-        <h3 class="search-result__title"><a href="{{ post.link }}">{{ post.title }}</a></h3>
-        <div class="search-result__text">
-          <a href="{{ post.link }}">{{post.content|excerpt(30)}}</a>
-        </div>
-      </div>
-    {% endfor %}
-    {% else %}
-      <p>{{ __('Sorry, no results were found!', 'ffw_theme') }}</p>
-    {% endif %}
+{% block feature %}
+  <div class="page-title-wrapper">
+    <div class="container">
+      {% if title is defined %}
+        <h1 id="page-title">{{ pll_e('Search results for') }}: {{ title }}</h2>
+      {% endif %}
     </div>
   </div>
+{% endblock %}
 
+{% block content %}
+<div class="main-wrapper">
+  <div class="container">
+    {#% include 'searchform.twig' %#}
+    <div class="block-search-form block-main-search-form">
+      {{ fn('shortcode', '[wpdreams_ajaxsearchlite]') }}
+    </div>
+
+    <div class="search-result">
+      <div class="container-wide search-result__inner">
+      {% if posts %}
+      <div class="block-list-post">
+        <div class="list-posts row">
+          {% for post in posts %}
+          <article class="post-item col-md-4 {{ fn('get_post_class', classes, post.ID)|join(' ') }}">
+            <div class="post-item-inner">
+              <div class="post-media" style="background-image: url({{ fn('get_the_post_thumbnail_url', post.ID) }});"><img src="{{ fn('get_the_post_thumbnail_url', post.ID) }}"></div>
+              <div class="post-body">
+                <h3 class="post-title"><a href="{{ fn('get_permalink', post.ID) }}">{{ fn('get_the_title', post.ID) }}</a></h3>
+                <div class="post-summary">{{ fn('get_the_date') }}</div>
+              </div>
+              <a href="{{ fn('get_permalink', post.ID) }}" class="post-link"></a>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+        <p>{{ __('Sorry, no results were found!', 'ffw_theme') }}</p>
+      {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

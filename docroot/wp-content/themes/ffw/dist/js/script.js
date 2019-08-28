@@ -148,14 +148,17 @@
     $('.js-menu-show').on('click', mobileMenu);
     jcarousel_slider('.news-slide-carousel', 4);
     jcarousel_slider('.block-hashtag-media', 3);
+    jcarousel_slider('.post-slide-carousel', 3);
   });
 
   $(window).scroll(function() {
     backToTopShow();
+    //blockAnimateScroll();
   });
 
   $(window).load(function() {
     // Call to function
+    blockAnimateScroll();
   });
 
   $(window).resize(function() {

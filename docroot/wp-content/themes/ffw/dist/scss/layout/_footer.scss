@@ -47,6 +47,14 @@
   }
 }
 
+.block-facebook-fanpage {
+  text-align: right;
+
+  @include breakpoint(laptopDown) {
+    text-align: center;
+  }
+}
+
 .block-coppyright {
   border-top: rem(1px) solid $white;
   padding-top: rem(30px);

@@ -9,6 +9,12 @@
 
 $context = Timber::get_context();
 $post = new TimberPost();
+$protected = post_password_required($post->ID);
+$context['protected_label'] = 'pwbox-'.( empty( $post->ID ) ? rand() : $post->ID );
 $context['post'] = $post;
 
-Timber::render( 'template-front-page.twig', $context );
+if ($protected) {
+  Timber::render( 'single-protected.twig', $context );
+} else {
+  Timber::render( 'template-front-page.twig', $context );
+}

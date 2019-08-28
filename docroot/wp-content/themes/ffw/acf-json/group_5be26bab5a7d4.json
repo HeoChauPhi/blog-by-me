@@ -1,6 +1,6 @@
 {
     "key": "group_5be26bab5a7d4",
-    "title": "Footer Components",
+    "title": "Group Footer Components",
     "fields": [
         {
             "key": "field_5d206ee5a4e69",
@@ -193,6 +193,51 @@
                     ],
                     "min": "",
                     "max": ""
+                },
+                "layout_5d66309fd27f4": {
+                    "key": "layout_5d66309fd27f4",
+                    "name": "facebook_fanpage",
+                    "label": "Facebook Fanpage",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_5d66309fd27f6",
+                            "label": "Facebook Fanpage URL",
+                            "name": "facebook_fanpage_url",
+                            "type": "url",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_5d66309fd27f7",
+                            "label": "Component Class",
+                            "name": "component_class",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
                 }
             },
             "button_label": "Add Footer Components",
@@ -236,5 +281,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1563011666
+    "modified": 1566978252
 }

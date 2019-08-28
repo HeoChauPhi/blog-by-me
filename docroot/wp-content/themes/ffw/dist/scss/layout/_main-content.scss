@@ -1,3 +1,15 @@
 main {
+  background-color: $white;
   padding: rem(50px 0 40px);
+}
+
+#page-title {
+  color: $white;
+}
+
+.page-title-wrapper {
+  #page-title {
+    color: $color-base;
+    text-align: center;
+  }
 }

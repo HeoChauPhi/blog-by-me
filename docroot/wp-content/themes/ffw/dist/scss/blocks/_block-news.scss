@@ -9,7 +9,7 @@
     }
   }
 
-  .news-item {
+  .post-item-inner {
     height: rem(230px);
     overflow: hidden;
     position: relative;
@@ -35,7 +35,7 @@
     }
   }
 
-  .post-info {
+  .post-body {
     background-color: rgba($black, 0.5);
     bottom: 0;
     color: $white;
@@ -47,6 +47,10 @@
     .post-title {
       font-weight: 700;
       margin: rem(0 0 10px);
+
+      a {
+        color: $color-title;
+      }
     }
   }
 

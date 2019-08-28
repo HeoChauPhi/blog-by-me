@@ -122,6 +122,26 @@
   }
 }
 
+.block-search-form {
+  margin-left: auto;
+  margin-right: auto;
+  width: rem(250px);
+
+  @include breakpoint(laptopDown) {
+    &:not(.block-main-search-form) {
+      align-items: baseline;
+      padding-top: rem(100px);
+      width: 100%;
+    }
+  }
+
+  &.block-main-search-form {
+    margin-bottom: rem(30px);
+    position: relative;
+    z-index: 1;
+  }
+}
+
 .mobile-navigation {
   @include breakpoint(laptopDown) {
     align-items: center;

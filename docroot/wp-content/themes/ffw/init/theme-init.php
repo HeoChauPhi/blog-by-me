@@ -47,6 +47,31 @@ function related($custom_cat, $showpost = -1) {
 
 /**
  *
+ * View Related Post by Taxonomy.
+ *
+ * @return type $viewed_posts Object for post.
+ *
+ */
+function viewedpost() {
+  if ( isset($_COOKIE['viewed_posts']) ) { 
+    $cookie_podt_ids = unserialize($_COOKIE['viewed_posts'], ["allowed_classes" => false]);
+
+    $viewed_args = array(
+      'post_type'   => 'post',
+      'post__in'    => $cookie_podt_ids,
+      'post_status' => 'publish',
+    );
+
+    $viewed_posts = Timber::get_posts($viewed_args);
+    
+    return $viewed_posts;
+  } else {
+    return null;
+  }
+}
+
+/**
+ *
  * View Related Post by Custom Fields.
  * @param type $post_type String slug of Post Type.
  * @param type $custom_field String Slug of Custom field.
@@ -135,6 +160,10 @@ function acfwidget($name, $widgetid) {
         $layout = $field['acf_fc_layout'];
         
         switch ($layout) {
+          case 'facebook_fanpage_url':
+            print_r($field);
+            break;
+
           default:
             $field['index'] = $index;
 
@@ -368,8 +397,45 @@ function flexible_content($name) {
       $field['component_id'] = $key + 1;
 
       switch ($layout) {
-        case 'test':
-          print_r($field);
+        case 'block_post_slide':
+
+          //print_r($field);
+
+          if ( $field['post_filter'] == 'post_cat' ) {
+            $args = array(
+              'post_type'   => 'post',
+              'cat'         => $field['post_by_category'],
+              'post_status' => 'publish',
+              'orderby'     => 'cat',
+            );
+
+            $field['term'] = get_term_by('id', $field['post_by_category'][0], 'category');
+          } elseif ( $field['post_filter'] == 'post_custom' ) {
+            $args = array(
+              'post_type'   => 'post',
+              'post__in'    => $field['filter_custom_posts']['custom_posts'],
+              'post_status' => 'publish',
+            );
+          } else {
+            if ( isset($_COOKIE['viewed_posts']) ) { 
+              $cookie_podt_ids = unserialize($_COOKIE['viewed_posts'], ["allowed_classes" => false]);
+
+              $args = array(
+                'post_type'   => 'post',
+                'post__in'    => $cookie_podt_ids,
+                'post_status' => 'publish',
+              );
+            } else {
+              $args = null;
+            }
+          }
+
+          if ( $args ) {
+            $posts = Timber::get_posts($args);
+          } else { 
+            $posts = null;
+          }
+          $field['return_items'] = $posts;
 
           try {
             Timber::render($layout . '.twig', $field);
@@ -387,7 +453,7 @@ function flexible_content($name) {
           );
 
           $posts = Timber::get_posts($args);
-          $field['posts'] = $posts;
+          $field['return_items'] = $posts;
 
           try {
             Timber::render($layout . '.twig', $field);

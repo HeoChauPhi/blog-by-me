@@ -29,7 +29,8 @@ $container-large-desktop: 1366px !default;
   font-family: 'Barlow Semi Condensed', sans-serif;
 }
 
-$base-font-size: 16px;
+$base-font-size: 18px !default;
+$font-size-base: $base-font-size;
 
 // Color.
 $orange: #f61a15;

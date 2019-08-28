@@ -1,0 +1,23 @@
+<div class="block-contact-form">
+  <div class="container">
+    <div class="row contact-info">
+      <div class="col-md-3 contact-title">
+        <label>{{ contact_label }}</label>
+      </div>
+      <div class="col-md-9 contact-info-list">
+        <div class="row">
+          {% for item in contact_infor_group %}
+            <div class="col-md-4 contact-info-item">
+              <label class="contact-info-label">{{ item.contact_infor }}</label>
+              <div class="contact-info-value"><a href="{{ item.contact_value.url }}" {% if item.contact_value.target %} target="{{ item.contact_value.target }}"{% endif %}>{{ item.contact_value.title }}</a></div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-info-form-wrapper">
+      {{ fn('shortcode', '[contact-form-7 id="' ~ contact_form ~ '"]') }}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,7 @@
+<div class="block-footer block-footer-social {{ component_class }} {% if layout %}col-md-{{ layout }}{% endif %}">
+  {% if facebook_fanpage_url %}
+  <div class="block-facebook-fanpage {{ component_class }}">
+    <div class="fb-page" data-href="{{ facebook_fanpage_url }}" data-tabs="timeline" data-width="" data-height="300" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="{{ facebook_fanpage_url }}" class="fb-xfbml-parse-ignore"></blockquote></div>
+  </div>
+  {% endif %}
+</div>
