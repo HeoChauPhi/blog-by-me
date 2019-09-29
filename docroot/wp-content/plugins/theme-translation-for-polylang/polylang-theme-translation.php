@@ -1,7 +1,7 @@
 <?php
 /* Plugin Name: Theme and plugin translation for Polylang (TTfP)
 Description: Polylang - theme and plugin translation for WordPress
-Version: 3.0.0
+Version: 3.2.0
 Author: Marcin Kazmierski
 License: GPL2
 */
@@ -14,17 +14,25 @@ include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Polylang_TT_importer.php
 include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Polylang_TT_exporter.php';
 include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Polylang_TT_theme.php';
 
+
 /**
  * Class Polylang_Theme_Translation.
  */
 class Polylang_Theme_Translation
 {
+    const SETTINGS_OPTION = 'custom_pll_settings';
+
     protected $plugin_path;
 
     protected $files_extensions = array(
         'php',
         'inc',
         'twig',
+    );
+
+    const EXCLUDE_PLUGINS = array(
+        'polylang',
+        'polylang-theme-translation'
     );
 
     /**
@@ -52,8 +60,11 @@ class Polylang_Theme_Translation
     {
         $data = [];
         $themes = wp_get_themes();
-        if (!empty($themes)) {
-            foreach ($themes as $name => $theme) {
+
+        $settings = get_option(Polylang_Theme_Translation::SETTINGS_OPTION, []);
+
+        foreach ($themes as $name => $theme) {
+            if (!isset($settings['themes']) || in_array($name, $settings['themes'])) {
                 $theme_path = $theme->theme_root . DIRECTORY_SEPARATOR . $name;
                 $files = $this->get_files_from_dir($theme_path);
                 $strings = $this->file_scanner($files);
@@ -61,6 +72,7 @@ class Polylang_Theme_Translation
                 $data[$name] = $strings;
             }
         }
+
         return $data;
     }
 
@@ -69,19 +81,16 @@ class Polylang_Theme_Translation
      */
     public function run_plugin_scanner()
     {
-        $excludePlugins = array(
-            'polylang',
-            'polylang-theme-translation'
-        );
-
         $plugins = wp_get_active_and_valid_plugins();
         $data = [];
-        if (!empty($plugins)) {
-            foreach ($plugins as $plugin) {
-                $pluginDir = dirname($plugin);
-                $pluginName = pathinfo($plugin, PATHINFO_FILENAME);
 
-                if (!in_array($pluginName, $excludePlugins) && $pluginDir !== WP_PLUGIN_DIR) {
+        $settings = get_option(Polylang_Theme_Translation::SETTINGS_OPTION, []);
+
+        foreach ($plugins as $plugin) {
+            $pluginDir = dirname($plugin);
+            $pluginName = pathinfo($plugin, PATHINFO_FILENAME);
+            if (!isset($settings['plugins']) || in_array($pluginName, $settings['plugins'])) {
+                if (!in_array($pluginName, self::EXCLUDE_PLUGINS) && $pluginDir !== WP_PLUGIN_DIR) {
                     $files = $this->get_files_from_dir($pluginDir);
                     $strings = $this->file_scanner($files);
                     $this->add_to_polylang_register($strings, $pluginName);
@@ -89,6 +98,7 @@ class Polylang_Theme_Translation
                 }
             }
         }
+
         return $data;
     }
 
@@ -121,7 +131,14 @@ class Polylang_Theme_Translation
     {
         $strings = array();
         foreach ($files as $file) {
-            preg_match_all("/pll_[_e][\s]*\([\s]*[\'\"](.*?)[\'\"][\s]*\)/s", file_get_contents($file), $matches);
+            // find polylang functions
+            preg_match_all("/[\s=\(]+pll_[_e][\s]*\([\s]*[\'\"](.*?)[\'\"][\s]*\)/s", file_get_contents($file), $matches);
+            if (!empty($matches[1])) {
+                $strings = array_merge($strings, $matches[1]);
+            }
+
+            // find wp functions: __(), _e()
+            preg_match_all("/[\s=\(\.]+_[_e][\s]*\([\s]*[\'\"](.*?)[\'\"][\s]*,[\s]*[\'\"](.*?)[\'\"][\s]*\)/s", file_get_contents($file), $matches);
             if (!empty($matches[1])) {
                 $strings = array_merge($strings, $matches[1]);
             }
@@ -155,6 +172,8 @@ function process_polylang_theme_translation()
             $plugin_obj->run();
         }
     }
+
+
 }
 
 add_action('wp_loaded', 'process_polylang_theme_translation_wp_loaded');
@@ -181,6 +200,32 @@ function process_polylang_theme_translation_wp_loaded()
         exit;
     }
 
+
+    if (isset($_POST['action_settings'])) {
+        $settings = [
+            'themes' => [],
+            'plugins' => [],
+        ];
+        $t = isset($_POST['themes']) ? $_POST['themes'] : [];
+        foreach ($t as $item) {
+            if (in_array($item, pll_get_themes())) {
+                $settings['themes'][] = $item;
+            }
+        }
+
+        $t = isset($_POST['plugins']) ? $_POST['plugins'] : [];
+        foreach ($t as $item) {
+            if (in_array($item, pll_get_plugins())) {
+                $settings['plugins'][] = $item;
+            }
+        }
+
+        update_option(Polylang_Theme_Translation::SETTINGS_OPTION, $settings);
+
+        wp_redirect((add_query_arg(['_msg' => 'settings-saved'], wp_get_referer())));
+        exit;
+    }
+
 }
 
 add_filter('pll_settings_tabs', 'import_export_strings', 10, 1);
@@ -190,11 +235,52 @@ function import_export_strings(array $tabs)
     return $tabs;
 }
 
+function pll_get_plugins()
+{
+    $pluginsNames = [];
+    $plugins = wp_get_active_and_valid_plugins();
+
+    foreach ($plugins as $plugin) {
+        $pluginDir = dirname($plugin);
+        $pluginName = pathinfo($plugin, PATHINFO_FILENAME);
+        if (!in_array($pluginName, Polylang_Theme_Translation::EXCLUDE_PLUGINS) && $pluginDir !== WP_PLUGIN_DIR) {
+            $pluginsNames[] = $pluginName;
+        }
+    }
+
+    return $pluginsNames;
+}
+
+function pll_get_themes()
+{
+    $themesNames = [];
+    $themes = wp_get_themes();
+
+    foreach ($themes as $name => $theme) {
+        $themesNames[] = $name;
+    }
+
+    return $themesNames;
+}
+
 
 add_action('pll_settings_active_tab_import_export_strings', 'custom_pll_settings_active_tab_import_export_strings', 10, 0);
 function custom_pll_settings_active_tab_import_export_strings()
 {
+    if (get_option(Polylang_Theme_Translation::SETTINGS_OPTION) === false) {
+        $settings = [
+            'themes' => pll_get_themes(),
+            'plugins' => pll_get_plugins(),
+        ];
+        add_option(Polylang_Theme_Translation::SETTINGS_OPTION, $settings);
+    } else {
+        $settings = get_option(Polylang_Theme_Translation::SETTINGS_OPTION);
+    }
+
     $data = [
+        'settings' => $settings,
+        'themes' => pll_get_themes(),
+        'plugins' => pll_get_plugins(),
         'items' => (int)(isset($_GET['items']) ? $_GET['items'] : 0),
         'msg' => filter_var(isset($_GET['_msg']) ? $_GET['_msg'] : '', FILTER_SANITIZE_STRING),
     ];
@@ -206,4 +292,15 @@ add_action('plugins_loaded', 'plugins_loaded_tt_for_polylang');
 function plugins_loaded_tt_for_polylang()
 {
     load_plugin_textdomain('polylang-tt', false, basename(__DIR__) . '/languages');
+}
+
+add_filter('gettext', 'tt_pll_gettext_filter');
+function tt_pll_gettext_filter($original)
+{
+    $translations = get_translations_for_domain('pll_string');
+    $translation = $translations->translate($original);
+    if (empty($translation)) {
+        return $original;
+    }
+    return $translation;
 }

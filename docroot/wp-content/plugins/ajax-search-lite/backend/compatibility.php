@@ -69,6 +69,14 @@ if (ASL_DEMO) $_POST = null;
                 <p class='descMsg'>Whenever the user clicks on a live search result, and decides to navigate back, the search will re-trigger and reset the previous options.</p>
             </div>
             <div class="item">
+                <?php $o = new wpdreamsYesNo("js_fix_duplicates", __('Try fixing DOM duplicates of the search bar if they exist?', 'ajax-search-lite'),
+                    $com_options['js_fix_duplicates']
+                ); ?>
+                <p class='descMsg'>
+                    <?php echo __('Some menu or widgets scripts tend to <strong>clone</strong> the search bar completely for Mobile viewports, causing a malfunctioning search bar with no event handlers. When this is active, the plugin script will try to fix that, if possible.', 'ajax-search-lite'); ?>
+                </p>
+            </div>
+            <div class="item">
                 <?php $o = new wpdreamsYesNo("load_google_fonts", "Load the <strong>google fonts</strong> used in the search options?",
                     $com_options['load_google_fonts']
                 ); ?>
@@ -157,6 +165,7 @@ if (ASL_DEMO) $_POST = null;
                 "load_mcustom_js" => $_POST['load_mcustom_js'],
                 "detect_ajax" => $_POST['detect_ajax'],
                 "js_retain_popstate" => $_POST['js_retain_popstate'],
+                'js_fix_duplicates' => $_POST['js_fix_duplicates'],
                 'load_google_fonts' => $_POST['load_google_fonts'],
                 'old_browser_compatibility' => $_POST['old_browser_compatibility'],
                 // Query options

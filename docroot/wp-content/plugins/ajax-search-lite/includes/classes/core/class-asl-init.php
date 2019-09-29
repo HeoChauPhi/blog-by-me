@@ -219,7 +219,8 @@ class WD_ASL_Init {
             'detect_ajax' => $com_opt['detect_ajax'],
             'scrollbar' => $load_mcustom,
             'js_retain_popstate' => $com_opt['js_retain_popstate'],
-            'version' => ASL_CURRENT_VERSION
+            'version' => ASL_CURRENT_VERSION,
+            'fix_duplicates' => $com_opt['js_fix_duplicates']
         ));
 
     }

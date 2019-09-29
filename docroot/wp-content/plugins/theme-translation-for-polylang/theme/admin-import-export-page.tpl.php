@@ -22,8 +22,58 @@ switch ($data['msg']) {
         </div>
         <?php
         break;
+    case "settings-saved":
+        ?>
+        <div class="notice notice-success is-dismissible">
+            <p>
+                <?php
+                print __('Settings saved.', 'polylang-tt');
+                ?>
+            </p>
+        </div>
+        <?php
+        break;
 }
 ?>
+
+<h3>
+    <?php _e('Settings', 'polylang-tt'); ?>
+</h3>
+
+<h4>
+    <?php _e('Select area to be scanned in Strigs translations tab', 'polylang-tt'); ?>:
+</h4>
+
+<div class="form-wrap">
+    <form id="settings" method="post" enctype="multipart/form-data"
+          action="<?php echo esc_url(add_query_arg('pll_action', 'settings')); ?>">
+        <?php wp_nonce_field('settings', '_wpnonce_settings'); ?>
+        <input type="hidden" name="action_settings" value="1">
+        <p>Themes:</p>
+        <?php foreach ($data['themes'] as $theme): ?>
+            <label>
+                <input type="checkbox" name="themes[]" value="<?php print $theme; ?>"
+                       <?php if (in_array($theme, $data['settings']['themes'])): ?>checked<?php endif; ?>>
+                <?php print $theme; ?>
+            </label>
+        <?php endforeach; ?>
+        <p>Plugins:</p>
+
+        <?php foreach ($data['plugins'] as $plugin): ?>
+            <label>
+                <input type="checkbox" name="plugins[]" value="<?php print $plugin; ?>"
+                       <?php if (in_array($plugin, $data['settings']['plugins'])): ?>checked<?php endif; ?>>
+                <?php print $plugin; ?>
+            </label>
+        <?php endforeach; ?>
+
+        <?php
+        submit_button(__('Save', 'polylang-tt')); // Since WP 3.1
+        ?>
+    </form>
+</div>
+
+<hr>
 
 <h3>
     <?php _e('How it is work?', 'polylang-tt'); ?>
@@ -42,6 +92,8 @@ switch ($data['msg']) {
         <?php _e('Plugin in searched skins or plugins chooses texts from Polylang functions, such as:', 'polylang-tt'); ?>
     </p>
     <ul>
+        <li>_e();</li>
+        <li>__();</li>
         <li>pll_e();</li>
         <li>pll__();</li>
     </ul>

@@ -27,6 +27,7 @@ function asl_do_init_options() {
         'js_source' => "min",
         'js_init' => "dynamic",
         'load_mcustom_js' => 'yes',
+        'js_fix_duplicates' => 1,
         "detect_ajax" => 0,
         "js_retain_popstate" => 0,
         'load_google_fonts' => 1,

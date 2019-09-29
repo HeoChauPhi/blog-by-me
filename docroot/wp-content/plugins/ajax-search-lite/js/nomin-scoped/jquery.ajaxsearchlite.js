@@ -105,6 +105,12 @@
                 $this.n.resultsDiv.detach().appendTo($this.n.resultsAppend);
             }
 
+            // Memorize settins and results original HTML codes
+            if ( typeof(ASL.resHTML) == 'undefined' )
+                ASL.resHTML = $this.n.resultsDiv.html();
+            if ( typeof(ASL.setHTML) == 'undefined' )
+                ASL.setHTML = $this.n.searchsettings.html();
+
             $('fieldset' ,$this.n.searchsettings).each(function(){
                 $('.asl_option:not(.hiddend)', this).last().addClass("asl-o-last");
             });

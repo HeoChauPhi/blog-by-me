@@ -8,7 +8,7 @@ window.ASL.getScope = function() {
     /**
      * Explanation:
      * If the sript is scoped, the first argument is always passed in a localized jQuery
-     * variable, while the actual parameter can be aspjQuery or jQuery (or anything) as well.
+     * variable, while the actual parameter can be asljQuery or jQuery (or anything) as well.
      */
     if (typeof jQuery !== "undefined") return jQuery;
 
@@ -130,12 +130,92 @@ window.ASL.initialize = function(id) {
             if (typeof jsonData === "undefined" || jsonData == "") return false;
 
             var args = JSON.parse(jsonData);
+            scope("#ajaxsearchlite" + rid).addClass('hasASL');
 
             return scope("#ajaxsearchlite" + rid).ajaxsearchlite(args);
         });
     }
 
     _this.initialized = true;
+};
+
+window.ASL.fixClones = function() {
+    var _this = this;
+    _this.fix_duplicates = _this.fix_duplicates || 0;
+    if ( _this.fix_duplicates == 0 )
+        return false;
+
+    if ( typeof _this.getScope == 'undefined' )
+        return false;
+    var scope = _this.getScope();
+
+    var inst = {};
+    var selector = ".asl_init_data";
+
+    scope(selector).each(function(){
+        var rid =  scope(this).attr('id').match(/^asl_init_id_(.*)/)[1];
+        if ( typeof inst[rid] == 'undefined' ) {
+            inst[rid] = {
+                'rid'  : rid,
+                'id'  : rid,
+                'count': 1
+            };
+        } else {
+            inst[rid].count++;
+        }
+    });
+
+    scope.each(inst, function(k, v){
+        // Same instance, but more copies
+        if ( v.count > 1 ) {
+            scope('.asl_m_' + v.rid).each(function(kk, vv){
+                if ( kk == 0 ) return true;
+                var parent = scope(this).parent();
+                var n_rid = v.id;
+                while ( scope('#ajaxsearchlite' + n_rid).length != 0 ) {
+                    n_rid++;
+                }
+                // Main box
+                scope(this).attr('id', 'ajaxsearchlite' + n_rid);
+                scope(this).removeClass('asl_m_' + v.rid).addClass('asl_m_' + n_rid);
+                scope(this).removeClass('hasASL');
+                // Results box
+                // Check if the cloning did make a copy before init, if not, make a results box
+                if ( scope('.asl_r_'+v.rid, this).length == 0 ) {
+                    scope('.asl_r_'+v.rid).clone().appendTo(scope(this));
+                }
+                scope('.asl_r_'+v.rid, this).attr('id', 'ajaxsearchliteres'+n_rid);
+                scope('.asl_r_'+v.rid, this).attr('data-id', n_rid);
+                scope('.asl_r_'+v.rid, this).removeClass('asl_r_'+v.rid).addClass('asl_r_'+n_rid);
+                if ( typeof(ASL.resHTML) != 'undefined' ) {
+                    scope('#ajaxsearchliteres'+n_rid).html(ASL.resHTML);
+                }
+                // Settings box
+                // Check if the cloning did make a copy before init, if not, make a settings box
+                if ( scope('.asl_s_'+v.rid, this).length == 0 && scope('.asl_s_'+v.rid).length != 0 ) {
+                    scope('.asl_s_'+v.rid).clone().appendTo(scope(this));
+                }
+                if ( scope('.asl_sb_'+v.rid, this).length == 0 && scope('.asl_sb_'+v.rid).length != 0 ) {
+                    scope('.asl_sb_'+v.rid).clone().appendTo(scope(this));
+                }
+                scope('.asl_s_'+v.rid, this).attr('id', 'ajaxsearchlitesettings'+n_rid);
+                if ( typeof(ASL.setHTML) != 'undefined' ) {
+                    scope('#ajaxsearchlitesettings'+n_rid).html(ASL.setHTML);
+                }
+                scope('.asl_sb_'+v.rid, parent).attr('id', 'ajaxsearchlitebsettings'+n_rid);
+                if ( typeof(ASL.setHTML) != 'undefined' ) {
+                    scope('#ajaxsearchlitebsettings'+n_rid).html(ASL.setHTML);
+                }
+                // Other data
+                if ( scope('.asl_hidden_data', parent).length > 0 )
+                    scope('.asl_hidden_data', parent).attr('id', 'asl_hidden_data_'+n_rid);
+                if ( scope('.asl_init_data', parent).length > 0 )
+                    scope('.asl_init_data', parent).attr('id', 'asl_init_id_'+n_rid);
+
+                _this.initialize(n_rid);
+            });
+        }
+    });
 };
 
 window.ASL.ready = function() {
@@ -145,6 +225,9 @@ window.ASL.ready = function() {
 
     scope(document).ready(function () {
         _this.initialize();
+        setTimeout(function(){
+            _this.fixClones();
+        }, 2500);
     });
 
     // Redundancy for safety
@@ -152,6 +235,9 @@ window.ASL.ready = function() {
         // It should be initialized at this point, but you never know..
         if ( !_this.initialized ) {
             _this.initialize();
+            setTimeout(function(){
+                _this.fixClones();
+            }, 2500);
             console.log("ASL initialized via window.load");
         }
     });
@@ -165,6 +251,14 @@ window.ASL.ready = function() {
             }, 500);
         });
     }
+
+    var tt;
+    scope(window).on('resize', function(){
+        clearTimeout(tt);
+        tt = setTimeout(function(){
+            _this.fixClones();
+        }, 2000);
+    });
 };
 
 // Make a reference clone, just in case if an ajax page loader decides to override
