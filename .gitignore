@@ -2,7 +2,7 @@
 ############
 docroot/wp-config-local.php
 docroot/wp-cli.local.yml
-# docroot/wp-content/uploads
+docroot/wp-content/uploads
 docroot/wp-content/blogs.dir/
 docroot/wp-content/upgrade/
 docroot/wp-content/backup-db/
@@ -11,12 +11,14 @@ docroot/wp-content/backupwordpress-*/
 docroot/wp-content/managewp/backups/
 docroot/wp-content/advanced-cache.php
 docroot/wp-content/wp-cache-config.php
+docroot/.htaccess
 docroot/sitemap.xml
 docroot/sitemap.xml.gz
 *.log
 
 # @TODO writable paths
 docroot/wp-content/cache/
+docroot/wp-content/w3tc-config/
 docroot/wp-content/backups/
 
 # Avoid accidental modification of pantheon.upstream.yml in sites
