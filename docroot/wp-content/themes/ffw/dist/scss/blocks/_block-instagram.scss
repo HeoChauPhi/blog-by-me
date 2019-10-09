@@ -1,0 +1,20 @@
+.block-instagram {
+  .block-instagram-list {
+    display: none;
+
+    &.slick-slider {
+      display: block;
+    }
+
+    a {
+      background-color: $black;
+      display: block;
+
+      &:hover {
+        img {
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+}

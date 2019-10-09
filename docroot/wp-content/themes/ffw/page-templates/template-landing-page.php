@@ -13,6 +13,8 @@ $protected = post_password_required($post->ID);
 $context['protected_label'] = 'pwbox-'.( empty( $post->ID ) ? rand() : $post->ID );
 $context['post'] = $post;
 
+$context['bottom_panel'] = Timber::get_widgets('bottom-panel-block');
+
 if ($protected) {
   Timber::render( 'single-protected.twig', $context );
 } else {

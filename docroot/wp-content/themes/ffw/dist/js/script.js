@@ -111,6 +111,8 @@
         infinite: true,
         slidesToShow: $item,
         slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 4000,
         responsive: [
           {
             breakpoint: 1024,
@@ -147,8 +149,9 @@
     $('.js-scroll-down').on('click', scrollDown);
     $('.js-menu-show').on('click', mobileMenu);
     jcarousel_slider('.news-slide-carousel', 4);
-    jcarousel_slider('.block-hashtag-media', 3);
+    jcarousel_slider('.block-hashtag-media', 4);
     jcarousel_slider('.post-slide-carousel', 3);
+    jcarousel_slider('.block-instagram-list', 10);
   });
 
   $(window).scroll(function() {

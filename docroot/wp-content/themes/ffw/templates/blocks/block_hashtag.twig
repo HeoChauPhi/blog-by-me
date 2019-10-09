@@ -14,7 +14,7 @@
       {% if hashtag_images %}
       <div class="block-hashtag-media row">
         {% for item in hashtag_images %}
-          <div class="hashtag-media-item col-md-4">
+          <div class="hashtag-media-item col-md-3">
             <div class="hashtag-media-inner">
               <div class="image-hashtag-media" style="background-image: url({{ item.hashtag_image.url }});" title="{{ item.hashtag_image.name }}"><img src="{{ item.hashtag_image.url }}" alt></div>
               <div class="hashtag-media-action">

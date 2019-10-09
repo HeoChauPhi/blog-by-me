@@ -30,6 +30,8 @@ $context['title_option'] = framework_page('title');
 
 //print_r($post);
 
+$context['bottom_panel'] = Timber::get_widgets('bottom-panel-block');
+
 if ($protected) {
   Timber::render( 'single-protected.twig', $context );
 } else {

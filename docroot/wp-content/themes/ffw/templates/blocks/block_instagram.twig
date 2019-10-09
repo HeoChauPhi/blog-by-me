@@ -1,0 +1,17 @@
+<div class="block-instagram">
+  {% if instagram_fullname %}
+  <h2 class="block-title"><a href="{{ instagram_url }}" target="__blank">{{ instagram_fullname }}</a></h2>
+  {% endif %}
+
+  <div class="block-inner">
+    {% if instagram_data %}
+      <div class="block-instagram-list">
+        {% for item in instagram_data %}
+          <div class="block-instagram-inner">
+            <a href="{{ item.link }}" target="_blank"><img src="{{ item.images.standard_resolution.url }}"></a>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>

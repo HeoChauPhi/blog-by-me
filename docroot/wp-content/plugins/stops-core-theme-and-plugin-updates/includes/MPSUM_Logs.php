@@ -8,7 +8,7 @@
  * @since 6.0.0
  */
 class MPSUM_Logs {
-	
+
 	/**
 	 * Holds the class instance.
 	 *
@@ -31,7 +31,7 @@ class MPSUM_Logs {
 	 * @var bool Determines whether auto update or manual
 	 */
 	protected $auto_update = false;
-	
+
 	/**
 	 * Holds version number of the table
 	 *
@@ -39,7 +39,7 @@ class MPSUM_Logs {
 	 * @access private
 	 * @var string $slug
 	 */
-	private $version = '1.1.3';
+	private $version = '1.1.4';
 
 	/**
 	 * Holds a variable for checkin the logs table
@@ -49,7 +49,7 @@ class MPSUM_Logs {
 	 * @var bool $log_table_exists
 	 */
 	private static $log_table_exists = false;
-	
+
 	/**
 	 * Set a class instance.
 	 *
@@ -64,7 +64,7 @@ class MPSUM_Logs {
 		}
 		return self::$instance;
 	} //end get_instance
-	
+
 	/**
 	 * Class constructor.
 	 *
@@ -76,10 +76,8 @@ class MPSUM_Logs {
 	protected function __construct() {
 		$table_version = get_site_option('mpsum_log_table_version', '0');
 		if (version_compare($table_version, $this->version) < 0) {
-			if (!$this->log_table_exists()) {
-				$this->build_table();
-				MPSUM_Updates_Manager::update_option('mpsum_log_table_version', $this->version);
-			}
+			$this->build_table();
+			MPSUM_Updates_Manager::update_option('mpsum_log_table_version', $this->version);
 		}
 
 		// Clear transient on updates screen
@@ -96,10 +94,21 @@ class MPSUM_Logs {
 		add_action('admin_init', array($this, 'cache_version_numbers'));
 		add_action('pre_auto_update', array($this, 'pre_auto_update'));
 		add_action('automatic_updates_complete', array($this, 'automatic_updates'));
+		add_action('automatic_updates_complete', array($this, 'update_translations'));
 		add_action('upgrader_process_complete', array($this, 'manual_updates'), 10, 2);
 		add_filter('eum_i18n', array($this, 'logs_i18n'));
 
 	} //end constructor
+
+	/**
+	 * Run translations when automatic updates are finished.
+	 *
+	 * @param array $update_results Update results.
+	 * @return void
+	 */
+	public function update_translations($update_results) {
+		Language_Pack_Upgrader::async_upgrade();
+	}
 
 	/**
 	 * Add webhook i18n
@@ -111,14 +120,14 @@ class MPSUM_Logs {
 		$i18n['logs_no_items'] = __('No items found.', 'stops-core-theme-and-plugin-updates');
 		return $i18n;
 	}
-	
+
 	/**
 	 * Cache core, plugins and themes versions to use in log messages.
 	 *
 	 * @return array Cached version information
 	 */
 	public function cache_version_numbers() {
-		
+
 		// Transient expires in 360 minutes - If false or not array, cache continues
 		$continue_cache = false;
 		$this->log_messages = get_site_transient('mpsum_version_numbers');
@@ -273,7 +282,13 @@ class MPSUM_Logs {
 						$version = isset($plugin->item->new_version) ? $plugin->item->new_version : '0.00';
 						$version_from = $this->log_messages[$type][$plugin->item->plugin]['version'];
 						list($version, $status) = $this->set_status_and_version($plugin->result, $version_from, $version, $status);
-						$this->insert_log($name, $type, $version_from, $version, 'automatic', $status);
+						$notes = '';
+						if (isset($plugin->messages ) && is_array($plugin->messages)) {
+							foreach ($plugin->messages as $message) {
+								$notes .= $message . "\n\r\n\r";
+							}
+						}
+						$this->insert_log($name, $type, $version_from, $version, 'automatic', $status, 0, $notes );
 					}
 					break;
 				case 'theme':
@@ -284,7 +299,13 @@ class MPSUM_Logs {
 						$version = $theme->item->new_version;
 						$version_from = $this->log_messages[$type][$theme->item->theme]['version'];
 						list($version, $status) = $this->set_status_and_version($theme->result, $version_from, $version, $status);
-						$this->insert_log($name, $type, $version_from, $version, 'automatic', $status);
+						$notes = '';
+						if (isset($theme->messages ) && is_array($theme->messages)) {
+							foreach ($theme->messages as $message) {
+								$notes .= $message . "\n\r";
+							}
+						}
+						$this->insert_log($name, $type, $version_from, $version, 'automatic', $status, 0, $notes);
 					}
 					break;
 				case 'translation':
@@ -334,20 +355,23 @@ class MPSUM_Logs {
 	 * @param int    $status       Status of upgrade
 	 * @param int    $user_id      User responsible for the upgrade
 	 */
-	private function insert_log($name, $type, $version_from, $version, $action, $status, $user_id = 0) {
+	private function insert_log($name, $type, $version_from, $version, $action, $status, $user_id = 0, $notes = '' ) {
 		global $wpdb;
 		$table_name = $wpdb->base_prefix . 'eum_logs';
+		if ('' == $version_from) $version_from = '0.00';
+		$notes = str_replace('&#8230;', '', $notes);
 		$wpdb->insert(
 			$table_name,
 			array(
-				'user_id'  => $user_id,
-				'name'	   => $name,
-				'type'	   => $type,
+				'user_id'      => $user_id,
+				'name'         => $name,
+				'type'         => $type,
 				'version_from' => $version_from,
-				'version' => $version,
-				'action'  => $action,
-				'status'  => $status,
-				'date'	   => current_time('mysql'),
+				'version'      => $version,
+				'action'       => $action,
+				'status'       => $status,
+				'date'         => current_time('mysql'),
+				'notes'        => $notes,
 			),
 			array(
 				'%d',
@@ -358,10 +382,11 @@ class MPSUM_Logs {
 				'%s',
 				'%s',
 				'%s',
+				'%s',
 			)
 		);
 	}
-	
+
 	/**
 	 * Get the name of an translation item being updated.
 	 *
@@ -393,7 +418,7 @@ class MPSUM_Logs {
 		}
 		return '';
 	}
-	
+
 
 	/**
 	 * Manual updates
@@ -408,7 +433,19 @@ class MPSUM_Logs {
 		$user_id = get_current_user_id();
 		if (0 == $user_id) return; // If there is no user, this is not a manual update
 		if (true === $this->auto_update) return;
+
 		switch ($options['type']) {
+			case 'translation':
+				foreach ($options['translations'] as $translation) {
+					$status = 1;
+					$version = $translation['version'];
+					$version_from = $version;
+					$slug = $translation['slug'];
+					$name = $this->get_name_for_update($translation['type'], $slug);
+					$name = $name . ' (' . $translation['language'] . ')';
+					$this->insert_log($name, 'translation', $version_from, $version, 'manual', $status, $user_id);
+				}
+				break;
 			case 'core':
 				$version_from = $this->log_messages['core']['version'];
 				$version = $this->log_messages['core']['new_version'];
@@ -449,17 +486,6 @@ class MPSUM_Logs {
 					}
 				}
 				break;
-			case 'translation':
-				foreach ($options['translations'] as $translation) {
-					$status = 1;
-					$version = $translation['version'];
-					$version_from = $version;
-					$slug = $translation['slug'];
-					$name = $this->get_name_for_update($translation['type'], $slug);
-					$name = $name . ' (' . $translation['language'] . ')';
-					$this->insert_log($name, $translation['type'], $version_from, $version, 'manual', $status, $user_id);
-				}
-				break;
 		}
 	}
 
@@ -477,12 +503,14 @@ class MPSUM_Logs {
 		$tablename = $wpdb->base_prefix . 'eum_logs';
 
 		// Version numbers will be the same since the plugin didn't update
+		$version_from = $plugin_data['Version'];
+		if ('' == $version_from) $version_from = '0.00';
 		$wpdb->insert(
 			$tablename,
 			array(
 				'name'	        => $plugin_data['Name'],
 				'type'	        => 'plugin',
-				'version_from'  => $plugin_data['Version'],
+				'version_from'  => $version_from,
 				'version'       => $plugin_data['Version'],
 				'action'        => 'automatic',
 				'status'        => 2,
@@ -499,7 +527,7 @@ class MPSUM_Logs {
 			)
 		);
 	}
-	
+
 	/**
 	 * Creates the log table
 	 *
@@ -511,7 +539,7 @@ class MPSUM_Logs {
 	public function build_table() {
 		global $wpdb;
 		$tablename = $wpdb->base_prefix . 'eum_logs';
-		
+
 		// Get collation - From /wp-admin/includes/schema.php
 		$charset_collate = '';
 		if (! empty($wpdb->charset))
@@ -528,8 +556,9 @@ class MPSUM_Logs {
 						version VARCHAR(255) NOT NULL,
 						action VARCHAR(255) NOT NULL,
 						status VARCHAR(255) NOT NULL,
+						notes TEXT NOT NULL,
 						date DATETIME NOT NULL,
-						PRIMARY KEY  (log_id) 
+						PRIMARY KEY  (log_id)
 						) {$charset_collate};";
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 		dbDelta($sql);
@@ -549,7 +578,7 @@ class MPSUM_Logs {
 		self::$log_table_exists = (bool) $wpdb->get_var("SHOW TABLES LIKE '$table_name'");
 		return self::$log_table_exists;
 	}
-	
+
 	/**
 	 * Clears the log table
 	 *
@@ -564,7 +593,7 @@ class MPSUM_Logs {
 		$sql = "delete from $tablename";
 		$wpdb->query($sql);
 	}
-	
+
 	/**
 	 * Drops the log table
 	 *

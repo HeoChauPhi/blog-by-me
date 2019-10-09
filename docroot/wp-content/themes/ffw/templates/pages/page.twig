@@ -9,6 +9,10 @@
     {{ function('flexible_content', 'group_component') }}
   {% endfor %}
 
+  <div class="bottom-panel">
+    {{ bottom_panel }}
+  </div>
+
   {#% if function('comments_open') %}
   {% include 'comments.twig' %}
   {{ function('comment_form') }}
