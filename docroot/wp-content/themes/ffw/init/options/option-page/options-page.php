@@ -20,6 +20,14 @@ function ct_page_option_metaboxes() {
     'id'         => $prefix . 'title',
     'type'       => 'checkbox'
   ) );
+
+  // Disable Bottom Panel
+  $cmb->add_field( array(
+    'name'       => __( 'Disable Bottom Panel', 'cmb2' ),
+    'desc'       => __( 'Check it if you want disable Bottom Panel region on this page', 'cmb2' ),
+    'id'         => $prefix . 'bottom_panel',
+    'type'       => 'checkbox'
+  ) );
 }
 
 function framework_page($name = '') {

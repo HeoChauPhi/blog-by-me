@@ -16,9 +16,9 @@ $context['protected_label'] = 'pwbox-'.( empty( $post->ID ) ? rand() : $post->ID
 $context['post'] = $post;
 
 if ( isset($_COOKIE['viewed_posts']) ) {
-  $cookie_podt_ids = unserialize($_COOKIE['viewed_posts'], ["allowed_classes" => false]);
-  array_push($cookie_podt_ids, $post->ID);
-  $post_ids = array_unique($cookie_podt_ids);
+  $cookie_post_ids = unserialize($_COOKIE['viewed_posts'], ["allowed_classes" => false]);
+  array_push($cookie_post_ids, $post->ID);
+  $post_ids = array_unique($cookie_post_ids);
   setcookie('viewed_posts', serialize($post_ids), time()+86400, '/');
 } else {
   $post_ids = [$post->ID];

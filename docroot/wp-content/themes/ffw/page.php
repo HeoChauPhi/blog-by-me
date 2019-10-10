@@ -29,8 +29,9 @@ $context['post'] = $post;
 $context['title_option'] = framework_page('title');
 
 //print_r($post);
-
-$context['bottom_panel'] = Timber::get_widgets('bottom-panel-block');
+if ( framework_page('bottom_panel') != "on" ) {
+  $context['bottom_panel'] = Timber::get_widgets('bottom-panel-block');
+}
 
 if ($protected) {
   Timber::render( 'single-protected.twig', $context );
