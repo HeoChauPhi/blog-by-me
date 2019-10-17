@@ -690,10 +690,14 @@ function ffw_twig_data($data){
   // Theme option
   $theme_options                = get_option('ffw_board_settings');
   $google_api_key               = $theme_options['ffw_google_api_key'];
-  $body_content_code = $theme_options['ffw_body_content_code'];
+  $header_code                  = $theme_options['ffw_header_code'];
+  $body_content_code            = $theme_options['ffw_body_content_code'];
+  $footer_code                  = $theme_options['ffw_footer_code'];
 
   $data['google_api_key']       = $google_api_key;
-  $data['body_content_code'] = $body_content_code;
+  $data['header_code']          = $header_code;
+  $data['body_content_code']    = $body_content_code;
+  $data['footer_code']          = $footer_code;
 
   // Get PPL Plugin
   if ( !empty($GLOBALS["polylang"]) ) {

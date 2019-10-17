@@ -16,6 +16,10 @@
     <link rel="pingback" href="{{site.pingback_url}}" />
     <script src='https://www.google.com/recaptcha/api.js?render=explicit' async defer></script>
     {{ wp_head }}
+    
+    {% if header_code %}
+      {{ fn('htmlspecialchars_decode', header_code) }}
+    {% endif %}
   </head>
   <body class="{{ body_class }}" data-template="base.twig">
     <div class="page-wrapper">

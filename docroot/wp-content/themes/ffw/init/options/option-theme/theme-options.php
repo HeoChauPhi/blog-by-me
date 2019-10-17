@@ -81,12 +81,30 @@ class FFWSettingsPage {
     );
 
     add_settings_field(
+      'ffw_header_code',
+      __('Header Code', 'ffw_theme'),
+      array( $this, 'ffw_form_textarea' ), // Callback
+      'ffw-setting-admin', // Page
+      'ffw_google_api',
+      'ffw_header_code'
+    );
+
+    add_settings_field(
       'ffw_body_content_code',
       __('Body Code', 'ffw_theme'),
       array( $this, 'ffw_form_textarea' ), // Callback
       'ffw-setting-admin', // Page
       'ffw_google_api',
       'ffw_body_content_code'
+    );
+
+    add_settings_field(
+      'ffw_footer_code',
+      __('Footer Code', 'ffw_theme'),
+      array( $this, 'ffw_form_textarea' ), // Callback
+      'ffw-setting-admin', // Page
+      'ffw_google_api',
+      'ffw_footer_code'
     );
   }
 
@@ -101,8 +119,14 @@ class FFWSettingsPage {
     if( isset( $input['ffw_google_api_key'] ) )
       $new_input['ffw_google_api_key'] = sanitize_text_field( $input['ffw_google_api_key'] );
 
+    if( isset( $input['ffw_header_code'] ) )
+      $new_input['ffw_header_code'] = sanitize_text_field( htmlentities($input['ffw_header_code']) );
+
     if( isset( $input['ffw_body_content_code'] ) )
       $new_input['ffw_body_content_code'] = sanitize_text_field( htmlentities($input['ffw_body_content_code']) );
+
+    if( isset( $input['ffw_footer_code'] ) )
+      $new_input['ffw_footer_code'] = sanitize_text_field( htmlentities($input['ffw_footer_code']) );
 
     return $new_input;
   }
