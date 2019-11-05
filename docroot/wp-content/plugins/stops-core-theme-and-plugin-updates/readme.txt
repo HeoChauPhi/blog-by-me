@@ -1,11 +1,11 @@
 === Easy Updates Manager ===
 Contributors: davidanderson, kidsguide, ronalfy, roary86, bigwing, webulous
 Tags: updates manager, easy updates manager, disable updates manager, disable updates, update control, plugin updates, theme updates, core updates, automatic updates, multisite, logs
-Requires at least: 4.6
+Requires at least: 4.7
 Requires PHP: 5.3
 Donate link: https://easyupdatesmanager.com
-Tested up to: 5.2
-Stable tag: 8.1.0
+Tested up to: 5.3
+Stable tag: 8.2.0
 License: GPLv2 or later
 
 Manage all your WordPress updates, including individual updates, automatic updates, logs, and loads more. This also works very well with WordPress Multisite.
@@ -52,6 +52,7 @@ Premium features include:
 <li>Check plugins: runs a check of plugins that have been removed from the WordPress Plugin Directory</li>
 <li>Webhook: integrates with third-party services to run automatic updates via cron or even Zapier</li>
 <li>Export logs: exports logs for printing, or downloads a CSV or JSON file for a date range</li>
+<li>Version control protection: prevent updates from occuring to plugins and themes under version control</li>
 </ul>
 
 > For more information on Easy Updates Manager Premium, <a href="https://easyupdatesmanager.com">check out our website at easyupdatesmanager.com</a>.
@@ -124,6 +125,18 @@ Since third-party providers use custom update mechanisms, we cannot always guara
 For additional information and FAQs for Easy Updates Manager <a href="https://easyupdatesmanager.com">check out our website</a>.
 
 == Changelog ==
+
+= 8.2.0 - 2019-10-30 =
+
+* FEATURE: (Premium) Safe mode now checks themes for compatibility.
+* FEATURE: (Premium) Version controlled assets now show in the EUM plugins and themes tabs. 
+* FIX: Delayed updates were delaying automatic updates to WordPress core when no delay was requested
+* TWEAK: Divi theme can now be auto-upgraded.
+* TWEAK: Bump required WP version from 4.6 to 4.7. We've not introduced anything to make it incompatible so it will likely stil work; but this is the support requirement.
+
+= 8.1.1 - 2019-10-23 =
+
+* FIX: Fixed uninstall script error when deleting the plugin.
 
 = 8.1.0 - 2019-10-08 =
 
@@ -261,4 +274,4 @@ For past changelogs, <a href="https://easyupdatesmanager.com/blog/">please visit
 
 == Upgrade Notice ==
 
-* 8.1.0: Notes section added to log to show why an automatic update failed. (Premium) Adding version control protection so that version controlled plugins or themes will not be updated. Many other tweaks and fixes; a recommended update for all.
+* 8.2.0 : Various tweaks and improvements and a fix for an unwanted delay in WP core updates - a recommended update for all

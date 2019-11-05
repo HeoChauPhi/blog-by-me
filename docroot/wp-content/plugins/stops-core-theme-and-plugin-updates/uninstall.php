@@ -44,7 +44,7 @@ if (($isPremium && !$freeActive) || ($isFree && !$premiumActive)) {
 	delete_site_option('easy_updates_manager_dismiss_page_notice_until');
 	delete_site_option('easy_updates_manager_dismiss_season_notice_until');
 	delete_site_option('easy_updates_manager_dismiss_survey_notice_until');
-	delete_site_optio('easy_updates_manager_dismiss_constant_notices');
+	delete_site_option('easy_updates_manager_dismiss_constant_notices');
 	delete_site_transient('eum_plugin_updates');
 	delete_site_transient('eum_theme_updates');
 	delete_site_transient('eum_core_updates');

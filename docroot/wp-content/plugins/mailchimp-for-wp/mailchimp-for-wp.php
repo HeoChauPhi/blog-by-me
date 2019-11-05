@@ -3,7 +3,7 @@
 Plugin Name: MC4WP: Mailchimp for WordPress
 Plugin URI: https://mc4wp.com/#utm_source=wp-plugin&utm_medium=mailchimp-for-wp&utm_campaign=plugins-page
 Description: Mailchimp for WordPress by ibericode. Adds various highly effective sign-up methods to your site.
-Version: 4.6.1
+Version: 4.6.2
 Author: ibericode
 Author URI: https://ibericode.com/
 Text Domain: mailchimp-for-wp
@@ -41,7 +41,7 @@ function _mc4wp_load_plugin()
     }
 
     // bootstrap the core plugin
-    define('MC4WP_VERSION' ,'4.6.1');
+    define('MC4WP_VERSION', '4.6.2');
     define('MC4WP_PLUGIN_DIR', dirname(__FILE__) . '/');
     define('MC4WP_PLUGIN_URL', plugins_url('/', __FILE__));
     define('MC4WP_PLUGIN_FILE', __FILE__);
@@ -57,7 +57,6 @@ function _mc4wp_load_plugin()
      */
     $mc4wp = mc4wp();
     $mc4wp['api'] = 'mc4wp_get_api_v3';
-    $mc4wp['request'] = array( 'MC4WP_Request', 'create_from_globals' );
     $mc4wp['log'] = 'mc4wp_get_debug_log';
 
     // forms
@@ -84,15 +83,13 @@ function _mc4wp_load_plugin()
             $messages = new MC4WP_Admin_Messages();
             $mc4wp['admin.messages'] = $messages;
 
-            $mailchimp = new MC4WP_MailChimp();
-
-            $admin = new MC4WP_Admin($admin_tools, $messages, $mailchimp);
+            $admin = new MC4WP_Admin($admin_tools, $messages);
             $admin->add_hooks();
 
-            $forms_admin = new MC4WP_Forms_Admin($messages, $mailchimp);
+            $forms_admin = new MC4WP_Forms_Admin($messages);
             $forms_admin->add_hooks();
 
-            $integrations_admin = new MC4WP_Integration_Admin($mc4wp['integrations'], $messages, $mailchimp);
+            $integrations_admin = new MC4WP_Integration_Admin($mc4wp['integrations'], $messages);
             $integrations_admin->add_hooks();
         }
     }
