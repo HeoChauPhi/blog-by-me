@@ -16,28 +16,28 @@
         {% endfor %}
       </div>
       {% endif %}
+    </div>
 
-      <div class="post-social-action">
-        <div class="post-like">
-          <i class="fas fa-heart"></i>
-          {% if post.get_field('post_like') %}
-          <span class="post-like-number">{{ post.get_field('post_like') }}</span>
-          {% else %}
-          <span class="post-like-number">{{ fn('rand', 30, 99) }}</span>
-          {% endif %}
-        </div>
-        {{ fn('shortcode', '[share_buttons print_icon=0]') }}
+    <div class="post-social-action">
+      <div class="post-like">
+        <i class="fas fa-heart"></i>
+        {% if post.get_field('post_like') %}
+        <span class="post-like-number">{{ post.get_field('post_like') }}</span>
+        {% else %}
+        <span class="post-like-number">{{ fn('rand', 30, 99) }}</span>
+        {% endif %}
       </div>
+      {{ fn('shortcode', '[share_buttons print_icon=0]') }}
+    </div>
 
-      <div class="post-nav-link">
-        <div class="post-nav-link-item post-nav-prev">
-          <label>{{ pll_e('Previous Post') }}</label>
-          {{ fn('previous_post_link', '%link') }}
-        </div>
-        <div class="post-nav-link-item post-nav-next">
-          <label>{{ pll_e('Next Post') }}</label>
-          {{ fn('next_post_link', '%link') }}
-        </div>
+    <div class="post-nav-link">
+      <div class="post-nav-link-item post-nav-prev">
+        <label>{{ pll_e('Previous Post') }}</label>
+        {{ fn('previous_post_link', '%link') }}
+      </div>
+      <div class="post-nav-link-item post-nav-next">
+        <label>{{ pll_e('Next Post') }}</label>
+        {{ fn('next_post_link', '%link') }}
       </div>
     </div>
 

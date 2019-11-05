@@ -16853,6 +16853,8 @@ main .block-title {
   border-bottom: 0.05556rem solid #7db8bd;
   margin-bottom: 1.66667rem;
   padding-bottom: 1.66667rem; }
+  .single-post .post-nav-link .post-nav-next {
+    text-align: right; }
   .single-post .post-nav-link label {
     display: block; }
 
