@@ -1,10 +1,15 @@
+{% if layout_image.alt is not empty %}
+{% set layout_image_alt = layout_image.alt %}
+{% else %}
+{% set layout_image_alt = layout_image.title %}
+{% endif %}
 <div class="block-image-text {{ component_class }}">
   <div class="container">
     <h2 class="block-title">{{ block_title }}</h2>
     <div class="block-inner">
       <div class="block-layout {{ block_layout }}">
         <div class="layout-image">
-          <img src="{{ layout_image.url }}" alt="{{ layout_image.title }}">
+          <img src="{{ layout_image.url }}" alt="{{ layout_image_alt }}">
         </div>
         <div class="layout-text">{{ layout_text|shortcodes }}</div>
       </div>

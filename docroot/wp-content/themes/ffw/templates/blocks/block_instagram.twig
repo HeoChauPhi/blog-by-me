@@ -8,7 +8,7 @@
       <div class="block-instagram-list">
         {% for item in instagram_data %}
           <div class="block-instagram-inner">
-            <a href="{{ item.link }}" target="_blank"><img src="{{ item.images.standard_resolution.url }}"></a>
+            <a href="{{ item.link }}" target="_blank"><img src="{{ item.images.standard_resolution.url }}" alt="{{ item.tags|join(', ') }}"></a>
           </div>
         {% endfor %}
       </div>

@@ -14,9 +14,15 @@
       {% if hashtag_images %}
       <div class="block-hashtag-media row">
         {% for item in hashtag_images %}
+          {% if item.hashtag_image.alt is not empty %}
+          {% set image_alt = item.hashtag_image.alt %}
+          {% else %}
+          {% set image_alt = item.hashtag_image.title %}
+          {% endif %}
+
           <div class="hashtag-media-item col-md-3">
             <div class="hashtag-media-inner">
-              <div class="image-hashtag-media" style="background-image: url({{ item.hashtag_image.url }});" title="{{ item.hashtag_image.name }}"><img src="{{ item.hashtag_image.url }}" alt></div>
+              <div class="image-hashtag-media" style="background-image: url({{ item.hashtag_image.url }});" title="{{ item.hashtag_image.name }}"><img src="{{ item.hashtag_image.url }}" alt="{{ image_alt }}"></div>
               <div class="hashtag-media-action">
                 <a class="icon-fancybox hashtag-action-item" data-fancybox="image-hashtag-media-component-{{ component_id }}" href="{{ item.hashtag_image.url }}"><i class="fas fa-expand-arrows-alt"></i></a>
                 <a class="icon-hashtag-link hashtag-action-item" href="{{ item.hashtag_image_url }}" target="_blank"><i class="fas fa-link"></i></a>

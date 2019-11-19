@@ -8,7 +8,7 @@ if ( file_exists(  dirname(__FILE__)  . '/cmb2/init.php' ) ) {
 }
 require_once dirname(__FILE__) . '/option-theme/theme-options.php';
 require_once dirname(__FILE__) . '/option-page/options-page.php';
-//require_once dirname(__FILE__) . '/option-post/options-post.php';
+require_once dirname(__FILE__) . '/option-post/options-post.php';
 
 // Admin settings.
 if(is_admin()) {

@@ -14,6 +14,7 @@ $post = new TimberPost();
 $protected = post_password_required($post->ID);
 $context['protected_label'] = 'pwbox-'.( empty( $post->ID ) ? rand() : $post->ID );
 $context['post'] = $post;
+$context['post_excerpt_option'] = framework_post('post_excerpt');
 $context['post_excerpt'] = apply_filters('the_excerpt', get_post_field('post_excerpt', $post->ID));
 
 if ( isset($_COOKIE['viewed_posts']) ) {

@@ -4,9 +4,14 @@
   {% set classes = null %}
 {% endif %}
 
+{% if post.thumbnail.alt is not empty %}
+  {% set post_thumb_alt = post.thumbnail.alt %}
+{% else %}
+  {% set post_thumb_alt = post.thumbnail.title %}
+{% endif %}
 <div class="post-item {{ fn('get_post_class', classes, post.ID)|join(' ') }}">
   <div class="post-item-inner">
-    <div class="post-media" style="background-image: url({{ post.thumbnail.src }});"><img src="{{ post.thumbnail.src }}"></div>
+    <div class="post-media" style="background-image: url({{ post.thumbnail.src }});"><img src="{{ post.thumbnail.src }}" alt="{{ post_thumb_alt }}"></div>
     <div class="post-body">
       <h3 class="post-title"><a href="{{ post.link }}">{{ post.title }}</a></h3>
       <div class="post-summary">{{ post.date }}</div>

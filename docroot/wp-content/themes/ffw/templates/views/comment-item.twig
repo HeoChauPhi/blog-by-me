@@ -6,7 +6,7 @@
 {% endif %}
 <div class="comment-item comment-{{ comment.ID }}">
   <div class="comment-author-picture" style="background-image: url({{ author_avatar }});">
-    <img src="{{ author_avatar }}" alt>
+    <img src="{{ author_avatar }}" alt="{{ user_data.display_name }}">
   </div>
   <div class="comment-body">
     <h4 class="comment-author-name">

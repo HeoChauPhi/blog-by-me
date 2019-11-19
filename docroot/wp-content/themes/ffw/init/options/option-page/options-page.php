@@ -7,7 +7,7 @@ function ct_page_option_metaboxes() {
   $cmb = new_cmb2_box( array(
     'id'            => 'page_option',
     'title'         => __( 'Page Options', 'cmb2' ),
-    'object_types'  => array( 'page', ), // Post type
+    'object_types'  => array( 'page' ), // Post type
     'context'       => 'normal',
     'priority'      => 'high',
     'show_names'    => true,

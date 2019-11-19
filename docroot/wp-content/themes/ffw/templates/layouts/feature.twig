@@ -52,7 +52,12 @@
             <div class="post-info">
               <div class="post-author">
                 {% set user_data = fn('get_userdata', post.post_author).data %}
-                <div class="post-author-avatar"><img src="{{ fn('get_field', 'user_avatar', 'user_' ~ user_data.ID).sizes.thumbnail }}" alt></div>
+                {% if fn('get_field', 'user_avatar', 'user_' ~ user_data.ID).alt is not empty %}
+                {% set user_alt = fn('get_field', 'user_avatar', 'user_' ~ user_data.ID).alt %}
+                {% else %}
+                {% set user_alt = fn('get_field', 'user_avatar', 'user_' ~ user_data.ID).title %}
+                {% endif %}
+                <div class="post-author-avatar"><img src="{{ fn('get_field', 'user_avatar', 'user_' ~ user_data.ID).sizes.thumbnail }}" alt="{{ user_alt }}"></div>
                 <div class="post-author-name"><a href="{{ fn('get_author_posts_url', user_data.ID) }}">{{ user_data.display_name }}</a></div>
               </div>
               <span class="post-info-dash"></span>

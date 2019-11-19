@@ -1,7 +1,7 @@
 <div class="signle-wrapper">
   <div class="container">
     <div class="signle-inner">
-      {% if post_excerpt %}
+      {% if post_excerpt and (post_excerpt_option != 'on') %}
       <div class="post-excerpt">{{ post_excerpt }}</div>
       {% endif %}
 
