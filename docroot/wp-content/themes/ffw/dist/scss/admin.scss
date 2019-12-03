@@ -1,0 +1,12 @@
+// Default variables.
+@import 'default-variables';
+
+.wp-block {
+  max-width: $screen-lg;
+}
+
+.post-type-post {
+  .wp-block {
+    max-width: $table;
+  }
+}
