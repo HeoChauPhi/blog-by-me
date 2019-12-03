@@ -23,8 +23,8 @@ class FFWSettingsPage {
   public function ffw_add_setting_page() {
     // This page will be under "Settings"
     add_options_page(
-      __('FFW Theme Setting', 'ffw_theme'),
-      __('Theme Setting', 'ffw_theme'),
+      __('FFW Theme Setting', 'ffw'),
+      __('Theme Setting', 'ffw'),
       'manage_options',
       'ffw-setting-admin',
       array($this, 'ffw_reate_admin_page')
@@ -40,7 +40,7 @@ class FFWSettingsPage {
 
     ?>
     <div class="wrap">
-      <h1><?php echo __('Theme settings', 'ffw_theme') ?></h1>
+      <h1><?php echo __('Theme settings', 'ffw') ?></h1>
       <form method="post" action="options.php">
       <?php
         // This prints out all hidden setting fields
@@ -66,14 +66,14 @@ class FFWSettingsPage {
     // Setting ID
     add_settings_section(
       'ffw_google_api', // ID
-      __('Google API', 'ffw_theme'), // Title
+      __('Google API', 'ffw'), // Title
       array( $this, 'ffw_google_print_section_info' ), // Callback
       'ffw-setting-admin' // Page
     );
 
     add_settings_field(
       'ffw_google_api_key',
-      __('Google API Key', 'ffw_theme'),
+      __('Google API Key', 'ffw'),
       array( $this, 'ffw_form_textfield' ), // Callback
       'ffw-setting-admin', // Page
       'ffw_google_api',
@@ -82,7 +82,7 @@ class FFWSettingsPage {
 
     add_settings_field(
       'ffw_header_code',
-      __('Header Code', 'ffw_theme'),
+      __('Header Code', 'ffw'),
       array( $this, 'ffw_form_textarea' ), // Callback
       'ffw-setting-admin', // Page
       'ffw_google_api',
@@ -91,7 +91,7 @@ class FFWSettingsPage {
 
     add_settings_field(
       'ffw_body_content_code',
-      __('Body Code', 'ffw_theme'),
+      __('Body Code', 'ffw'),
       array( $this, 'ffw_form_textarea' ), // Callback
       'ffw-setting-admin', // Page
       'ffw_google_api',
@@ -100,7 +100,7 @@ class FFWSettingsPage {
 
     add_settings_field(
       'ffw_footer_code',
-      __('Footer Code', 'ffw_theme'),
+      __('Footer Code', 'ffw'),
       array( $this, 'ffw_form_textarea' ), // Callback
       'ffw-setting-admin', // Page
       'ffw_google_api',
@@ -135,7 +135,7 @@ class FFWSettingsPage {
   * Print the Section text
   */
   public function ffw_google_print_section_info() {
-    echo __("", 'ffw_theme');
+    echo __("", 'ffw');
   }
 
   /**

@@ -1,13 +1,25 @@
 {% extends 'layout.twig' %}
 
 {% block content %}
-  {% for post in posts %}
-    {% if post.content %}
-    <div class="block-content__body">{{ post.content|shortcodes }}</div>
-    {% endif %}
+  {% if page_container == "on" %}
+  <div class="container">
+    {% for post in posts %}
+      {% if post.content %}
+      <div class="block-content__body">{{ post.content|shortcodes }}</div>
+      {% endif %}
 
-    {{ function('flexible_content', 'group_component') }}
-  {% endfor %}
+      {{ function('flexible_content', 'group_component') }}
+    {% endfor %}
+  </div>
+  {% else %}
+    {% for post in posts %}
+      {% if post.content %}
+      <div class="block-content__body">{{ post.content|shortcodes }}</div>
+      {% endif %}
+
+      {{ function('flexible_content', 'group_component') }}
+    {% endfor %}
+  {% endif %}
 
   {% if bottom_panel %}
   <div class="bottom-panel">

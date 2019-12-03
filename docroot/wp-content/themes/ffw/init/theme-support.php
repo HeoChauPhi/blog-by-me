@@ -132,11 +132,11 @@ class sidebar_Widget extends WP_Widget {
   public function __construct() {
     $widget_ops = array(
       'classname' => 'sidebar_widget',
-      'description' => __( 'Sidebar widget.', 'ffw_theme'),
+      'description' => __( 'Sidebar widget.', 'ffw'),
       'customize_selective_refresh' => true,
     );
     $control_ops = array( 'width' => 400, 'height' => 350 );
-    parent::__construct( 'sidebar_widget', __( 'Sidebar Widget', 'ffw_theme' ), $widget_ops, $control_ops );
+    parent::__construct( 'sidebar_widget', __( 'Sidebar Widget', 'ffw' ), $widget_ops, $control_ops );
   }
 
   public function widget( $args, $instance ) {
@@ -179,11 +179,11 @@ class header_Widget extends WP_Widget {
   public function __construct() {
     $widget_ops = array(
       'classname' => 'header_widget',
-      'description' => __( 'Custom widget.', 'ffw_theme'),
+      'description' => __( 'Custom widget.', 'ffw'),
       'customize_selective_refresh' => true,
     );
     $control_ops = array( 'width' => 400, 'height' => 350 );
-    parent::__construct( 'header_widget', __( 'Header Widget', 'ffw_theme' ), $widget_ops, $control_ops );
+    parent::__construct( 'header_widget', __( 'Header Widget', 'ffw' ), $widget_ops, $control_ops );
   }
 
   public function widget( $args, $instance ) {
@@ -226,11 +226,11 @@ class bottom_panel_Widget extends WP_Widget {
   public function __construct() {
     $widget_ops = array(
       'classname' => 'bottom_panel_Widget',
-      'description' => __( 'Custom widget.', 'ffw_theme'),
+      'description' => __( 'Custom widget.', 'ffw'),
       'customize_selective_refresh' => true,
     );
     $control_ops = array( 'width' => 400, 'height' => 350 );
-    parent::__construct( 'bottom_panel_Widget', __( 'Bottom Panel Widget', 'ffw_theme' ), $widget_ops, $control_ops );
+    parent::__construct( 'bottom_panel_Widget', __( 'Bottom Panel Widget', 'ffw' ), $widget_ops, $control_ops );
   }
 
   public function widget( $args, $instance ) {
@@ -321,11 +321,11 @@ class footer_Widget extends WP_Widget {
   public function __construct() {
     $widget_ops = array(
       'classname' => 'footer_Widget',
-      'description' => __( 'Custom widget.', 'ffw_theme'),
+      'description' => __( 'Custom widget.', 'ffw'),
       'customize_selective_refresh' => true,
     );
     $control_ops = array( 'width' => 400, 'height' => 350 );
-    parent::__construct( 'footer_Widget', __( 'Footer Widget', 'ffw_theme' ), $widget_ops, $control_ops );
+    parent::__construct( 'footer_Widget', __( 'Footer Widget', 'ffw' ), $widget_ops, $control_ops );
   }
 
   public function widget( $args, $instance ) {

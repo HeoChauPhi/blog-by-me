@@ -9,7 +9,12 @@
 ## Install project
 1. Initialize the environment: `fin up`
 2. Import database: `fin sqli path-to-database.sql`
-3. In the ROOT folder, create `wp-config-local.php` file with:
+3. Update option siteurl: `wp option update siteurl "my-local-site.example"`
+4. Update option home: `wp option update home "my-local-site.example"`
+5. Download and active Stage File Proxy plugin: `wp plugin install stage-file-proxy --activate`
+6. Go to setting Stage File Proxy page: `/wp-admin/options-general.php?page=stage-file-proxy`
+7. Add `Source Domain` is `http://www.exportkontrollforeningen.se/` and `Method` is `Redirect`
+8. In the ROOT folder, create `wp-config-local.php` file with:
 ```
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */

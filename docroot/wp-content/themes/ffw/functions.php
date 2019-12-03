@@ -102,22 +102,22 @@ function ffw_create_custom_post_types() {
   // Hotel
   register_post_type( '{CUSTOM-POST-TYPE}', array(
     'labels' => array(
-      'name'               => _x( '{CUSTOM-POST-TYPE}s', 'post type general name', 'ffw_theme' ),
-      'singular_name'      => _x( '{CUSTOM-POST-TYPE}', 'post type singular name', 'ffw_theme' ),
-      'menu_name'          => _x( '{CUSTOM-POST-TYPE}s', 'admin menu', 'ffw_theme' ),
-      'name_admin_bar'     => _x( '{CUSTOM-POST-TYPE}', 'add new on admin bar', 'ffw_theme' ),
-      'add_new'            => _x( 'Add New', '{CUSTOM-POST-TYPE}', 'ffw_theme' ),
-      'add_new_item'       => __( 'Add New {CUSTOM-POST-TYPE}', 'ffw_theme' ),
-      'new_item'           => __( 'New {CUSTOM-POST-TYPE}', 'ffw_theme' ),
-      'edit_item'          => __( 'Edit {CUSTOM-POST-TYPE}', 'ffw_theme' ),
-      'view_item'          => __( 'View {CUSTOM-POST-TYPE}', 'ffw_theme' ),
-      'all_items'          => __( 'All {CUSTOM-POST-TYPE}s', 'ffw_theme' ),
-      'search_items'       => __( 'Search {CUSTOM-POST-TYPE}s', 'ffw_theme' ),
-      'parent_item_colon'  => __( 'Parent {CUSTOM-POST-TYPE}s:', 'ffw_theme' ),
-      'not_found'          => __( 'No {CUSTOM-POST-TYPE}s found.', 'ffw_theme' ),
-      'not_found_in_trash' => __( 'No {CUSTOM-POST-TYPE}s found in Trash.', 'ffw_theme' )
+      'name'               => _x( '{CUSTOM-POST-TYPE}s', 'post type general name', 'ffw' ),
+      'singular_name'      => _x( '{CUSTOM-POST-TYPE}', 'post type singular name', 'ffw' ),
+      'menu_name'          => _x( '{CUSTOM-POST-TYPE}s', 'admin menu', 'ffw' ),
+      'name_admin_bar'     => _x( '{CUSTOM-POST-TYPE}', 'add new on admin bar', 'ffw' ),
+      'add_new'            => _x( 'Add New', '{CUSTOM-POST-TYPE}', 'ffw' ),
+      'add_new_item'       => __( 'Add New {CUSTOM-POST-TYPE}', 'ffw' ),
+      'new_item'           => __( 'New {CUSTOM-POST-TYPE}', 'ffw' ),
+      'edit_item'          => __( 'Edit {CUSTOM-POST-TYPE}', 'ffw' ),
+      'view_item'          => __( 'View {CUSTOM-POST-TYPE}', 'ffw' ),
+      'all_items'          => __( 'All {CUSTOM-POST-TYPE}s', 'ffw' ),
+      'search_items'       => __( 'Search {CUSTOM-POST-TYPE}s', 'ffw' ),
+      'parent_item_colon'  => __( 'Parent {CUSTOM-POST-TYPE}s:', 'ffw' ),
+      'not_found'          => __( 'No {CUSTOM-POST-TYPE}s found.', 'ffw' ),
+      'not_found_in_trash' => __( 'No {CUSTOM-POST-TYPE}s found in Trash.', 'ffw' )
     ),
-    'description'           => __( 'Description.', 'ffw_theme' ),
+    'description'           => __( 'Description.', 'ffw' ),
     'public'                => true,
     'publicly_queryable'    => true,
     'show_ui'               => true,
@@ -164,9 +164,9 @@ function ffw_create_custom_post_types() {
  */
 function ffw_create_custom_taxonomy() {
   $labels_subsite = array(
-    'name' => __('{CUSTOM-TAXONOMIES}', 'ffw_theme'),
-    'singular' => __('{CUSTOM-TAXONOMY}', 'ffw_theme'),
-    'menu_name' => __('{CUSTOM-TAXONOMY}', 'ffw_theme')
+    'name' => __('{CUSTOM-TAXONOMIES}', 'ffw'),
+    'singular' => __('{CUSTOM-TAXONOMY}', 'ffw'),
+    'menu_name' => __('{CUSTOM-TAXONOMY}', 'ffw')
   );
   $args_subsite = array(
     'labels'                     => $labels_subsite,

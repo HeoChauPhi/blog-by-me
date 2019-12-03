@@ -1,12 +1,12 @@
 <?php
 /*
 Plugin Name: Admin Columns
-Version: 3.4.6
+Version: 3.4.8
 Description: Customize columns on the administration screens for post(types), pages, media, comments, links and users with an easy to use drag-and-drop interface.
 Author: AdminColumns.com
 Author URI: https://www.admincolumns.com
 Plugin URI: https://www.admincolumns.com
-Requires PHP: 5.3.6
+Requires PHP: 5.6.20
 Text Domain: codepress-admin-columns
 Domain Path: /languages
 License: GPL v3
@@ -36,13 +36,13 @@ if ( ! is_admin() ) {
 }
 
 define( 'AC_FILE', __FILE__ );
-define( 'AC_VERSION', '3.4.6' );
+define( 'AC_VERSION', '3.4.8' );
 
 require_once __DIR__ . '/classes/Dependencies.php';
 
 add_action( 'after_setup_theme', function () {
 	$dependencies = new AC\Dependencies( plugin_basename( AC_FILE ), AC_VERSION );
-	$dependencies->requires_php( '5.3.6' );
+	$dependencies->requires_php( '5.6.20' );
 
 	if ( $dependencies->has_missing() ) {
 		return;
