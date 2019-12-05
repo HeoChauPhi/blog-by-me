@@ -1,0 +1,11 @@
+<div class="block-classic-paragraph {% if component_class %}{{ component_class }}{% endif %}">
+  <div class="container">
+    {% if block_title %}
+    <h2 class="block-title">{{ block_title }}</h2>
+    {% endif %}
+
+    <div class="block-inner">
+      {{ block_paragraph|shortcodes }}
+    </div>
+  </div>
+</div>

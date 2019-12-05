@@ -764,6 +764,73 @@
                     ],
                     "min": "",
                     "max": ""
+                },
+                "layout_5de9123d6b847": {
+                    "key": "layout_5de9123d6b847",
+                    "name": "block_classic_paragraph",
+                    "label": "Block Classic Paragraph",
+                    "display": "row",
+                    "sub_fields": [
+                        {
+                            "key": "field_5de9123d6b848",
+                            "label": "Block Title",
+                            "name": "block_title",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_5de9123d6b84a",
+                            "label": "Block Paragraph",
+                            "name": "block_paragraph",
+                            "type": "wysiwyg",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "tabs": "all",
+                            "toolbar": "full",
+                            "media_upload": 1,
+                            "delay": 0
+                        },
+                        {
+                            "key": "field_5de9123d6b84b",
+                            "label": "Component Class",
+                            "name": "component_class",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
                 }
             },
             "button_label": "Add Component",
@@ -788,5 +855,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1566901197
+    "modified": 1575555742
 }
