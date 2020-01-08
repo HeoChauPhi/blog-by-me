@@ -48,6 +48,28 @@
     });
   }
 
+  // Custom for post magazine
+  function post_magazine_popup() {
+    //console.log($(this).index());
+    $('.post-magazine-carousel-wrapper').addClass('post-magazine-carousel-show');
+    $('.carousel-magazine').slick('slickGoTo', $(this).index());
+
+    $('.carousel-destroy').on('click', function(){
+      $('.post-magazine-carousel-wrapper').removeClass('post-magazine-carousel-show');
+    });
+  }
+
+  // Table of contents
+  function tableOfContentShow() {
+    var offset = $('.ub_table-of-contents').offset();
+
+    if ($(this).scrollTop() > offset.top) {
+      $('.ub_table-of-contents').addClass('table-of-contents-fixed');
+    } else {
+      $('.ub_table-of-contents').removeClass('table-of-contents-fixed');
+    }
+  }
+
   /*
    * ================================
    * Animate block when scroll window
@@ -94,7 +116,7 @@
    * @param $item type Number item to show 
    * ===============================================
   */
-  function jcarousel_slider($name, $item) {
+  function jcarousel_slider($name, $item, $position = false) {
     if ($item < 3) {
       $($name).slick({
         adaptiveHeight: true,
@@ -108,10 +130,11 @@
       });
     } else {
       $($name).slick({
+        centerMode: $position,
         infinite: true,
         slidesToShow: $item,
         slidesToScroll: 1,
-        autoplay: true,
+        autoplay: false,
         autoplaySpeed: 4000,
         responsive: [
           {
@@ -144,6 +167,20 @@
    ================================================================== */
   $(document).ready(function() {
     // Call to function
+
+    if(!$.cookie('banner_popup_cookie') && $('#popup-banner-content').length > 0) {
+      $.fancybox.open({
+        src: '#popup-banner-content',
+        opts : {
+          beforeClose : function( instance, current ) {
+            var date = new Date();
+            date.setTime(date.getTime() + (3600 * 1000));
+            $.cookie('banner_popup_cookie', 'close', { expires: date, path: '/' });
+          }
+        }
+      });
+    }
+    
     //$('.js-toogle--menu').on('click', mobileMenu);
     $('.js-back-top').on('click', backToTop);
     $('.js-scroll-down').on('click', scrollDown);
@@ -162,6 +199,26 @@
   $(window).load(function() {
     // Call to function
     blockAnimateScroll();
+    $('.masonry-grid').masonry({
+      // options
+      itemSelector: '.masonry-grid-item'
+    });
+    jcarousel_slider('.carousel-magazine', 3, true);
+    $('.post-magazine-item').on('click', post_magazine_popup);
+
+    if ($('.ub_table-of-contents').length > 0) {
+      var offset_table_of_contents = $('.ub_table-of-contents').offset();
+
+      //console.log(offset_table_of_contents.left);
+      $(window).scroll(function fix_element() {
+        $('.ub_table-of-contents').css(
+          $(window).scrollTop() > offset_table_of_contents.top
+            ? { 'position': 'fixed', 'top': '10px' }
+            : { 'position': 'absolute', 'top': 'auto' }
+        );
+        return fix_element;
+      }());
+    }
   });
 
   $(window).resize(function() {

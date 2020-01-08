@@ -57,7 +57,11 @@
                 {% else %}
                 {% set user_alt = fn('get_field', 'user_avatar', 'user_' ~ user_data.ID).title %}
                 {% endif %}
+                {% if fn('get_field', 'user_avatar', 'user_' ~ user_data.ID) %}
                 <div class="post-author-avatar"><img src="{{ fn('get_field', 'user_avatar', 'user_' ~ user_data.ID).sizes.thumbnail }}" alt="{{ user_alt }}"></div>
+                {% else %}
+                <div class="post-author-avatar" style="background-color: #fff;"><img src="{{ fn('get_template_directory_uri') ~ '/dist/images/user-default.png' }}" alt="{{ user_alt }}"></div>
+                {% endif %}
                 <div class="post-author-name"><a href="{{ fn('get_author_posts_url', user_data.ID) }}">{{ user_data.display_name }}</a></div>
               </div>
               <span class="post-info-dash"></span>

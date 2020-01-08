@@ -26,7 +26,7 @@ require_once('init/options/option.php');
 if(!is_admin()) {
   // Add scripts
   function ct_libs_scripts() {
-    wp_register_script('lib-slick', get_stylesheet_directory_uri() . '/dist/js/libs/slick.js', array('jquery'), '0.7.0', TRUE);
+    wp_register_script('lib-slick', get_stylesheet_directory_uri() . '/dist/js/libs/slick.js', array('jquery'), '1.8.0', TRUE);
     wp_enqueue_script('lib-slick');
 
     wp_register_script('lib-matchHeight', get_stylesheet_directory_uri() . '/dist/js/libs/jquery.matchHeight-min.js', array('jquery'), '0.7.0', TRUE);
@@ -47,11 +47,17 @@ if(!is_admin()) {
     wp_register_script('jquery-ui', get_stylesheet_directory_uri() . '/dist/js/libs/jquery-ui.js', array('jquery'), '1.12.1', TRUE);
     wp_enqueue_script('jquery-ui');
     
+    wp_register_script('jquery-cookie', get_stylesheet_directory_uri() . '/dist/js/libs/jquery.cookie.js', array('jquery'), '1.4.1', TRUE);
+    wp_enqueue_script('jquery-cookie');
+    
     wp_register_script('lib-waypoints', get_stylesheet_directory_uri() . '/dist/js/libs/waypoints.min.js', array('jquery'), '1.6.2', TRUE);
     wp_enqueue_script('lib-waypoints');
     
     wp_register_script('lib-counterup', get_stylesheet_directory_uri() . '/dist/js/libs/jquery.counterup.min.js', array('jquery'), '1.0', TRUE);
     wp_enqueue_script('lib-counterup');
+    
+    wp_register_script('lib-masonry', get_stylesheet_directory_uri() . '/dist/js/libs/masonry.pkgd.min.js', array('jquery'), '4.2.2', TRUE);
+    wp_enqueue_script('lib-masonry');
 
     wp_register_script('script', get_stylesheet_directory_uri() . '/dist/js/script.js', '1.0.0', TRUE);
     wp_localize_script( 'script', 'customAjax', array( 'ajaxurl' => admin_url('admin-ajax.php' )));
@@ -100,62 +106,40 @@ add_action('admin_init', 'ct_admin_styles');
  */
 function ffw_create_custom_post_types() {
   // Hotel
-  register_post_type( '{CUSTOM-POST-TYPE}', array(
+  register_post_type( 'magazine', array(
     'labels' => array(
-      'name'               => _x( '{CUSTOM-POST-TYPE}s', 'post type general name', 'ffw' ),
-      'singular_name'      => _x( '{CUSTOM-POST-TYPE}', 'post type singular name', 'ffw' ),
-      'menu_name'          => _x( '{CUSTOM-POST-TYPE}s', 'admin menu', 'ffw' ),
-      'name_admin_bar'     => _x( '{CUSTOM-POST-TYPE}', 'add new on admin bar', 'ffw' ),
-      'add_new'            => _x( 'Add New', '{CUSTOM-POST-TYPE}', 'ffw' ),
-      'add_new_item'       => __( 'Add New {CUSTOM-POST-TYPE}', 'ffw' ),
-      'new_item'           => __( 'New {CUSTOM-POST-TYPE}', 'ffw' ),
-      'edit_item'          => __( 'Edit {CUSTOM-POST-TYPE}', 'ffw' ),
-      'view_item'          => __( 'View {CUSTOM-POST-TYPE}', 'ffw' ),
-      'all_items'          => __( 'All {CUSTOM-POST-TYPE}s', 'ffw' ),
-      'search_items'       => __( 'Search {CUSTOM-POST-TYPE}s', 'ffw' ),
-      'parent_item_colon'  => __( 'Parent {CUSTOM-POST-TYPE}s:', 'ffw' ),
-      'not_found'          => __( 'No {CUSTOM-POST-TYPE}s found.', 'ffw' ),
-      'not_found_in_trash' => __( 'No {CUSTOM-POST-TYPE}s found in Trash.', 'ffw' )
+      'name'               => _x( 'Magazines', 'post type general name', 'ffw' ),
+      'singular_name'      => _x( 'Magazine', 'post type singular name', 'ffw' ),
+      'menu_name'          => _x( 'Magazines', 'admin menu', 'ffw' ),
+      'name_admin_bar'     => _x( 'Magazine', 'add new on admin bar', 'ffw' ),
+      'add_new'            => _x( 'Add New', 'magazine', 'ffw' ),
+      'add_new_item'       => __( 'Add New Magazine', 'ffw' ),
+      'new_item'           => __( 'New Magazine', 'ffw' ),
+      'edit_item'          => __( 'Edit Magazine', 'ffw' ),
+      'view_item'          => __( 'View Magazine', 'ffw' ),
+      'all_items'          => __( 'All Magazines', 'ffw' ),
+      'search_items'       => __( 'Search Magazines', 'ffw' ),
+      'parent_item_colon'  => __( 'Parent Magazines:', 'ffw' ),
+      'not_found'          => __( 'No Magazines found.', 'ffw' ),
+      'not_found_in_trash' => __( 'No Magazines found in Trash.', 'ffw' )
     ),
     'description'           => __( 'Description.', 'ffw' ),
     'public'                => true,
-    'publicly_queryable'    => true,
+    'publicly_queryable'    => false,
     'show_ui'               => true,
     'show_in_menu'          => true,
     'query_var'             => true,
-    'rewrite'               => array('slug' => '{CUSTOM-POST-TYPE}'),
+    'rewrite'               => array('slug' => 'magazine'),
     'has_archive'           => true,
     'hierarchical'          => false,
-    'menu_position'         => 28,
-    'supports'              => array( 'title', 'editor' ),
-    'capabilities'          => array(
-      // Meta capabilities
-
-      'edit_post'               => "edit_{CUSTOM-POST-TYPE}",
-      'read_post'               => "read_{CUSTOM-POST-TYPE}",
-      'delete_post'             => "delete_{CUSTOM-POST-TYPE}",
-
-      'edit_posts'              => "edit_{CUSTOM-POST-TYPE}s",
-      'edit_others_posts'       => "edit_others_{CUSTOM-POST-TYPE}s",
-      'publish_posts'           => "publish_{CUSTOM-POST-TYPE}s",
-      'read_private_posts'      => "read_private_{CUSTOM-POST-TYPE}s",
-
-      // Primitive capabilities used within map_meta_cap():
-
-      'read'                    => "read",
-      'delete_posts'            => "delete_{CUSTOM-POST-TYPE}s",
-      'delete_private_posts'    => "delete_private_{CUSTOM-POST-TYPE}s",
-      'delete_published_posts'  => "delete_published_{CUSTOM-POST-TYPE}s",
-      'delete_others_posts'     => "delete_others_{CUSTOM-POST-TYPE}s",
-      'edit_private_posts'      => "edit_private_{CUSTOM-POST-TYPE}s",
-      'edit_published_posts'    => "edit_published_{CUSTOM-POST-TYPE}s",
-      'create_posts'            => "edit_{CUSTOM-POST-TYPE}s",
-    ),
+    'menu_position'         => 6,
+    'show_in_rest'          => true,
+    'supports'              => array( 'title', 'editor', 'thumbnail' ),
     // as pointed out by iEmanuele, adding map_meta_cap will map the meta correctly 
     'map_meta_cap' => true
   ));
 }
-//add_action( 'init', 'ffw_create_custom_post_types' );
+add_action( 'init', 'ffw_create_custom_post_types' );
 
 /*
  *
@@ -178,7 +162,7 @@ function ffw_create_custom_taxonomy() {
     'show_tagcloud'              => true,
     'show_in_quick_edit'         => false,
   );
-  register_taxonomy('{CUSTOM_TAXONOMY}', array('{CUSTOM-POST-TYPE}'), $args_subsite);
+  register_taxonomy('{CUSTOM_TAXONOMY}', array('magazine'), $args_subsite);
 }
 //add_action( 'init', 'ffw_create_custom_taxonomy', 0 );
 

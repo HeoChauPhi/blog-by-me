@@ -63,7 +63,33 @@ class FFWSettingsPage {
       array( $this, 'ffw_sanitize' )
     );
 
-    // Setting ID
+    // Setting Stie
+    add_settings_section(
+      'ffw_setting_started', // ID
+      __('Setting Started', 'ffw'), // Title
+      array( $this, 'ffw_google_print_section_info' ), // Callback
+      'ffw-setting-admin' // Page
+    );
+
+    add_settings_field(
+      'ffw_popup_image',
+      __('Upload Popup Banner', 'ffw_theme'),
+      array( $this, 'ffw_form_filefield' ), // Callback
+      'ffw-setting-admin', // Page
+      'ffw_setting_started',
+      'ffw_popup_image'
+    ); 
+
+    add_settings_field(
+      'ffw_popup_started',
+      __('Popup Started', 'ffw'),
+      array( $this, 'ffw_form_wp_editor' ), // Callback
+      'ffw-setting-admin', // Page
+      'ffw_setting_started',
+      'ffw_popup_started'
+    );
+
+    // Setting 3rt ID
     add_settings_section(
       'ffw_google_api', // ID
       __('Google API', 'ffw'), // Title
@@ -116,6 +142,12 @@ class FFWSettingsPage {
   public function ffw_sanitize( $input ) {
     $new_input = array();
 
+    if( isset( $input['ffw_popup_image'] ) )
+      $new_input['ffw_popup_image'] = sanitize_text_field( $input['ffw_popup_image'] );
+
+    if( isset( $input['ffw_popup_started'] ) )
+      $new_input['ffw_popup_started'] = sanitize_text_field( htmlentities($input['ffw_popup_started']) );
+
     if( isset( $input['ffw_google_api_key'] ) )
       $new_input['ffw_google_api_key'] = sanitize_text_field( $input['ffw_google_api_key'] );
 
@@ -158,5 +190,34 @@ class FFWSettingsPage {
   public function ffw_form_textarea($name) {
     $value = isset($this->options[$name]) ? esc_attr($this->options[$name]) : '';
     printf('<textarea cols="100%%" rows="8" type="textarea" id="form-id-%s" name="ffw_board_settings[%s]">%s</textarea>', $name, $name, $value);
+  }
+
+  public function ffw_form_filefield($name) {
+    $value = isset($this->options[$name]) ? esc_attr($this->options[$name]) : '';
+    printf('<div class="banner-wrapper %s"><img class="upload_media_thumb" src="%s" /><button class="remove_media_button" type="button" value="Remove Image"><i class="fa fa-times-circle" aria-hidden="true"></i></button></div>', empty($value) ? 'hidden' : '', $value);
+    printf('<input class="upload_media_url" type="hidden" size=60 id="form-id-%s" name="ffw_board_settings[%s]" value="%s" />', $name, $name, $value);
+    echo '<button class="upload_media_button" type="button" value="Upload Image"><i class="fa fa-upload" aria-hidden="true"></i> Upload Banner</button>';
+  }
+
+  public function ffw_form_wp_editor($name) {
+    $value = isset($this->options[$name]) ? esc_attr($this->options[$name]) : '';
+    wp_editor( html_entity_decode(stripslashes($value)), 'my_option', array(
+      'wpautop'       => true,
+      'media_buttons' => false,
+      'textarea_name' => 'my_option',
+      'editor_class'  => 'my_custom_class',
+      'textarea_rows' => 10
+    ));
+    printf('<textarea cols="100%%" rows="8" type="textarea" id="form-id-%s" name="ffw_board_settings[%s]" style="display: none;">%s</textarea>', $name, $name, $value);
+    ?>
+    <script>
+    //get the content from the WYSIWYG and display it another element
+    window.onload = function () {
+      tinymce.get('my_option').on('keyup change',function(e){
+        jQuery("#<?php echo 'form-id-' . $name ?>").html(this.getContent());
+      });
+    }
+    </script>
+    <?php
   }
 }

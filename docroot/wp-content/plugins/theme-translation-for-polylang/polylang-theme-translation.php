@@ -1,7 +1,7 @@
 <?php
 /* Plugin Name: Theme and plugin translation for Polylang (TTfP)
 Description: Polylang - theme and plugin translation for WordPress
-Version: 3.2.0
+Version: 3.2.1
 Author: Marcin Kazmierski
 License: GPL2
 */
@@ -235,6 +235,10 @@ function import_export_strings(array $tabs)
     return $tabs;
 }
 
+/**
+ * Get list of plugins
+ * @return array
+ */
 function pll_get_plugins()
 {
     $pluginsNames = [];
@@ -251,6 +255,10 @@ function pll_get_plugins()
     return $pluginsNames;
 }
 
+/**
+ * Get list of themes
+ * @return array
+ */
 function pll_get_themes()
 {
     $themesNames = [];

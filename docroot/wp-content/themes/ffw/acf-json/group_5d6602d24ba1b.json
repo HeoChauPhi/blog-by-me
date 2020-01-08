@@ -3,6 +3,28 @@
     "title": "Group for Posts",
     "fields": [
         {
+            "key": "field_5e0205a0687e8",
+            "label": "Post Magazines",
+            "name": "post_magazines",
+            "type": "post_object",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "magazine"
+            ],
+            "taxonomy": "",
+            "allow_null": 1,
+            "multiple": 1,
+            "return_format": "id",
+            "ui": 1
+        },
+        {
             "key": "field_5d6602de25996",
             "label": "Post Like",
             "name": "post_like",
@@ -41,5 +63,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1566966528
+    "modified": 1577190910
 }

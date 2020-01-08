@@ -133,3 +133,35 @@
     }
   }
 }
+
+.popup-banner {
+  &-content {
+    height: auto;
+    line-height: 0;
+    padding: 0 !important;
+    position: relative;
+    width: 60%;
+  }
+
+  &-image {
+    background-color: $black;
+
+    img {
+      height: auto;
+      opacity: 0.5;
+      width: 100%;
+    }
+  }
+
+  &-body {
+    align-items: center;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    left: 0;
+    padding: rem(30px);
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}

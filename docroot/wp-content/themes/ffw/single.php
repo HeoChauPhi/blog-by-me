@@ -17,6 +17,21 @@ $context['post'] = $post;
 $context['post_excerpt_option'] = framework_post('post_excerpt');
 $context['post_excerpt'] = apply_filters('the_excerpt', get_post_field('post_excerpt', $post->ID));
 
+if ( is_singular('post') ) {
+  $post_magazine_ids = get_field('post_magazines', $post->ID);
+
+  if ( $post_magazine_ids ) {
+    $args_magazines = array(
+      'post_type' => 'any',
+      'post__in'  => $post_magazine_ids,
+      'orderby' => 'post__in'
+    );
+
+    $post_magazines = Timber::get_posts($args_magazines);
+    $context['post_magazines'] = $post_magazines;
+  }
+}
+
 if ( isset($_COOKIE['viewed_posts']) ) {
   $cookie_post_ids = unserialize($_COOKIE['viewed_posts'], ["allowed_classes" => false]);
   array_push($cookie_post_ids, $post->ID);

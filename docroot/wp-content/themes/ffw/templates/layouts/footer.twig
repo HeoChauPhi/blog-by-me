@@ -48,5 +48,14 @@
         <div class="footer-navigation-item footer-search-mobile"><a href="#" class="js-menu-show" data-target=".block-search"><i class="fas fa-search"></i></a></div>
       </div>
     </div>
+
+    {% if popup_banner_image %}
+    <div class="popup-banner">      
+      <div style="display: none;" id="popup-banner-content" class="popup-banner-content">
+        <div class="popup-banner-image"><img src="{{ popup_banner_image }}" alt></div>
+        <div class="popup-banner-body">{{ fn('html_entity_decode', fn('stripslashes', popup_content)) }}</div>
+      </div>
+    </div>
+    {% endif %}
   </footer>
 {% endblock %}

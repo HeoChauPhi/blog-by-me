@@ -17,3 +17,10 @@ main {
 .bottom-panel {
   padding-top: rem(30px);
 }
+
+.ub_table-of-contents {
+  margin-right: rem(30px) !important;
+  position: absolute;
+  left: 0;
+  width: rem(300px);
+}

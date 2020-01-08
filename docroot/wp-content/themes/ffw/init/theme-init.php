@@ -693,11 +693,15 @@ function ffw_twig_data($data){
   $header_code                  = $theme_options['ffw_header_code'];
   $body_content_code            = $theme_options['ffw_body_content_code'];
   $footer_code                  = $theme_options['ffw_footer_code'];
+  $popup_banner_image           = $theme_options['ffw_popup_image'];
+  $popup_content                = $theme_options['ffw_popup_started'];
 
   $data['google_api_key']       = $google_api_key;
   $data['header_code']          = $header_code;
   $data['body_content_code']    = $body_content_code;
   $data['footer_code']          = $footer_code;
+  $data['popup_banner_image']   = $popup_banner_image;
+  $data['popup_content']        = $popup_content;
 
   // Get PPL Plugin
   if ( !empty($GLOBALS["polylang"]) ) {

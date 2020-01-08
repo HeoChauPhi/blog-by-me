@@ -30,16 +30,68 @@
       {{ fn('shortcode', '[share_buttons print_icon=0]') }}
     </div>
 
-    <div class="post-nav-link">
-      <div class="post-nav-link-item post-nav-prev">
-        <label>{{ pll_e('Previous Post') }}</label>
-        {{ fn('previous_post_link', '%link') }}
-      </div>
-      <div class="post-nav-link-item post-nav-next">
-        <label>{{ pll_e('Next Post') }}</label>
-        {{ fn('next_post_link', '%link') }}
-      </div>
+    {#<div class="post-nav-link">
+          <div class="post-nav-link-item post-nav-prev">
+            <label>{{ pll_e('Previous Post') }}</label>
+            {{ fn('previous_post_link', '%link') }}
+          </div>
+          <div class="post-nav-link-item post-nav-next">
+            <label>{{ pll_e('Next Post') }}</label>
+            {{ fn('next_post_link', '%link') }}
+          </div>
+        </div>#}
+
+    {% if post_magazines %}
+    <div class="post-magazine masonry-grid row">
+      {% for item in post_magazines %}
+        {% if item.thumbnail.alt is not empty %}
+          {% set post_thumb_alt = item.thumbnail.alt %}
+        {% else %}
+          {% set post_thumb_alt = item.thumbnail.title %}
+        {% endif %}
+
+        <div class="post-magazine-item masonry-grid-item col-md-3">
+          <div class="post-magazine-inner">
+            <div class="post-magazine-thumbnail">
+              <img src="{{ item.thumbnail.src }}" alt="{{ post_thumb_alt }}">
+            </div>
+            <h4 class="post-magazine-title">{{ item.title }}</h4>
+          </div>
+        </div>
+      {% endfor %}
     </div>
+    <div class="post-magazine-carousel-wrapper">
+      <div class="post-magazine-carousel carousel-magazine row">
+        {% for item in post_magazines %}
+        {% if item.thumbnail.alt is not empty %}
+          {% set post_thumb_alt = item.thumbnail.alt %}
+        {% else %}
+          {% set post_thumb_alt = item.thumbnail.title %}
+        {% endif %}
+
+        <div class="post-magazine-carousel-item carousel-magazine-item col-md-4">
+          <div class="post-magazine-carousel-inner scroll-style-3">
+            <div class="post-magazine-thumbnail" style="background-image: url({{ item.thumbnail.src }});">
+              <img src="{{ item.thumbnail.src }}" alt="{{ post_thumb_alt }}">
+            </div>
+            <div class="post-magazine-content-group">
+              <h3 class="post-magazine-title">{{ item.title }}</h3>
+              <div class="post-magazine-content">{{ item.content|shortcodes }}</div>
+              {% if item.get_field('locations') %}
+              <ul class="post-magazine-localtion">
+                {% for location in item.get_field('locations') %}
+                  <li>{{ location.location }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="carousel-destroy"><i class="far fa-times-circle"></i></div>
+    </div>
+    {% endif %}
 
     {% if fn('related', 'category') %}
       <div class="block-related-post block-post-slide">
@@ -59,6 +111,7 @@
         <div class="container-inner">
           {% include 'comments.twig' with {'default_avatar': default_avatar} %}
           {{ fn('comment_form') }}
+          {% include "comment-form.twig" %}
         </div>
       </div>
     {% endif %}
