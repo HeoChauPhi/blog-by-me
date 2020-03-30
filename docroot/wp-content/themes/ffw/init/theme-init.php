@@ -689,19 +689,35 @@ function ffw_twig_data($data){
 
   // Theme option
   $theme_options                = get_option('ffw_board_settings');
-  $google_api_key               = $theme_options['ffw_google_api_key'];
-  $header_code                  = $theme_options['ffw_header_code'];
-  $body_content_code            = $theme_options['ffw_body_content_code'];
-  $footer_code                  = $theme_options['ffw_footer_code'];
-  $popup_banner_image           = $theme_options['ffw_popup_image'];
-  $popup_content                = $theme_options['ffw_popup_started'];
+  if ( isset($theme_options['ffw_google_api_key']) ) {
+    $google_api_key               = $theme_options['ffw_google_api_key'];
+    $data['google_api_key']       = $google_api_key;
+  }
 
-  $data['google_api_key']       = $google_api_key;
-  $data['header_code']          = $header_code;
-  $data['body_content_code']    = $body_content_code;
-  $data['footer_code']          = $footer_code;
-  $data['popup_banner_image']   = $popup_banner_image;
-  $data['popup_content']        = $popup_content;
+  if ( isset($theme_options['ffw_header_code']) ) {
+    $header_code                  = $theme_options['ffw_header_code'];
+    $data['header_code']          = $header_code;
+  }
+
+  if ( isset($theme_options['ffw_body_content_code']) ) {
+    $body_content_code            = $theme_options['ffw_body_content_code'];
+    $data['body_content_code']    = $body_content_code;
+  }
+
+  if ( isset($theme_options['ffw_footer_code']) ) {
+    $footer_code                  = $theme_options['ffw_footer_code'];
+    $data['footer_code']          = $footer_code;
+  }
+
+  if ( isset($theme_options['ffw_popup_image']) ) {
+    $popup_banner_image           = $theme_options['ffw_popup_image'];
+    $data['popup_banner_image']   = $popup_banner_image;
+  }
+
+  if ( isset($theme_options['ffw_popup_started']) ) {
+    $popup_content                = $theme_options['ffw_popup_started'];
+    $data['popup_content']        = $popup_content;
+  }
 
   // Get PPL Plugin
   if ( !empty($GLOBALS["polylang"]) ) {
