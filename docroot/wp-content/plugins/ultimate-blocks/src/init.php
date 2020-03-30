@@ -47,6 +47,32 @@ function ub_check_is_gutenberg_page() {
  */
 
 function ub_load_assets() {
+    if (file_exists(wp_upload_dir()['basedir'] . '/ultimate-blocks/blocks.style.build.css') &&
+        filemtime(wp_upload_dir()['basedir'] . '/ultimate-blocks/blocks.style.build.css') <
+        filemtime(dirname(__DIR__) . '/dist/blocks.style.build.css')){
+        $frontStyleFile = fopen(wp_upload_dir()['basedir'] . '/ultimate-blocks/blocks.style.build.css', 'w');
+        $blockDir = dirname(__DIR__) . '/src/blocks/';
+        $blockList = get_option( 'ultimate_blocks', false );
+
+        foreach ( $blockList as $key => $block ) {
+            $blockDirName = strtolower(str_replace(' ', '-', 
+            trim(preg_replace('/\(.+\)/', '', $blockList[ $key ]['label']))
+                ));
+            $frontStyleLocation = $blockDir . $blockDirName . '/style.css';
+
+            if(file_exists($frontStyleLocation) && $blockList[ $key ]['active']){ //also detect if block is enabled
+                fwrite($frontStyleFile, file_get_contents($frontStyleLocation));
+            }
+            if($block['name'] === 'ub/styled-box' && $blockList[$key]['active']){
+                //add css for blocks phased out by styled box
+                fwrite($frontStyleFile, file_get_contents($blockDir . 'feature-box' . '/style.css'));
+                fwrite($frontStyleFile, file_get_contents($blockDir . 'notification-box' . '/style.css'));
+                fwrite($frontStyleFile, file_get_contents($blockDir . 'number-box' . '/style.css'));
+            }
+        }
+        fclose($frontStyleFile);
+    }
+
     wp_enqueue_style(
         'ultimate_blocks-cgb-style-css', // Handle.
         file_exists(dirname(dirname(dirname(__DIR__))) . '/uploads/ultimate-blocks') ?
@@ -339,6 +365,10 @@ function ub_include_block_attribute_css() {
                         'color: ' . $attributes['callToActionForeColor'] . ';' . PHP_EOL .
                         'border-color: ' . $attributes['callToActionForeColor'] . ';' . PHP_EOL .
                         'background-color: ' . $attributes['callToActionBackColor'] . ';' . PHP_EOL .
+                    '}' . PHP_EOL .
+                    $prefix . ' .ub_review_image{' . PHP_EOL .
+                        'max-height: ' . $attributes['imageSize'] . 'px;' . PHP_EOL .
+                        'max-width: ' . $attributes['imageSize'] . 'px;' . PHP_EOL .
                     '}' . PHP_EOL;
                     break;
                 case 'ub/social-share':
@@ -450,8 +480,9 @@ function ub_include_block_attribute_css() {
                     }
                     break;
                 case 'ub/table-of-contents-block':
+                    $prefix = '#ub_table-of-contents-' . $attributes['blockID'];
                     if($attributes['listStyle']=='plain'){
-                        $blockStylesheets .= '#ub_table-of-contents-' . $attributes['blockID'] . ' ul{' . PHP_EOL .
+                        $blockStylesheets .= $prefix . ' ul{' . PHP_EOL .
                             'list-style: none;' . PHP_EOL .
                         '}' . PHP_EOL;
                     }
@@ -461,6 +492,10 @@ function ub_include_block_attribute_css() {
                         '}' . PHP_EOL;
                         $hasNoSmoothScroll = false;
                     }
+                    $blockStylesheets .= $prefix . ' .ub_table-of-contents-header{' . PHP_EOL .
+                        'justify-self: ' . ($attributes['titleAlignment'] == 'center' ? 'center' :
+                            'flex-' . ($attributes['titleAlignment'] == 'left' ? 'start' : 'end')) . ';' . PHP_EOL .
+                    '}' . PHP_EOL;
                     break;
                 case 'ub/testimonial':
                     $prefix = '#ub_testimonial_' . $attributes['blockID'];
@@ -522,8 +557,31 @@ function ultimate_blocks_cgb_editor_assets() {
 	);
 
     // Styles.
-    //if custom css file exists and at least one block is disabled, enqueue it
-    //else enqueue default style
+
+    if (file_exists(wp_upload_dir()['basedir'] . '/ultimate-blocks/blocks.editor.build.css') && 
+        filemtime(wp_upload_dir()['basedir'] . '/ultimate-blocks/blocks.editor.build.css') <
+        filemtime(dirname(__DIR__) . '/dist/blocks.editor.build.css')){
+        $adminStyleFile = fopen(wp_upload_dir()['basedir'] . '/ultimate-blocks/blocks.editor.build.css', 'w');
+        $blockDir = dirname(__DIR__) . '/src/blocks/';
+        $blockList = get_option( 'ultimate_blocks', false );
+
+        foreach ( $blockList as $key => $block ) {
+            $blockDirName = strtolower(str_replace(' ', '-', 
+            trim(preg_replace('/\(.+\)/', '', $blockList[ $key ]['label']))
+                ));
+            $adminStyleLocation = $blockDir . $blockDirName . '/editor.css';
+
+            if(file_exists($adminStyleLocation) && $blockList[ $key ]['active']){ //also detect if block is enabled
+                fwrite($adminStyleFile, file_get_contents($adminStyleLocation));
+            }
+            if($block['name'] === 'ub/styled-box' && $blockList[$key]['active']){
+                //add css for blocks phased out by styled box
+                fwrite($adminStyleFile, file_get_contents($blockDir . 'feature-box' . '/style.css'));
+                fwrite($adminStyleFile, file_get_contents($blockDir . 'number-box' . '/style.css'));
+            }
+        }
+        fclose($adminStyleFile);
+    }
 
 	wp_enqueue_style(
 		'ultimate_blocks-cgb-block-editor-css', // Handle.

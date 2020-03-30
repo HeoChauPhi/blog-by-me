@@ -10,10 +10,18 @@ wp_reset_postdata(); ?>
         <div class="f-w-blk">
             <div class="d3f-w">
               <?php 
+              $sidebar_output = '';
               $sanitized_sidebar = ampforwp_sidebar_content_sanitizer('swift-footer-widget-area');
               if ( $sanitized_sidebar) {
                 $sidebar_output = $sanitized_sidebar->get_amp_content();
                 $sidebar_output = apply_filters('ampforwp_modify_sidebars_content',$sidebar_output);
+                $sidebar_output = preg_replace_callback('/<form(.*?)>(.*?)<\/form>/s', function($match){
+                  if(strpos($match[1], 'target=') === false){
+                    return '<form'.$match[1].' target="_top">'.$match[2].'</form>';
+                  }else{
+                    return '<form'.$match[1].'>'.$match[2].'</form>';
+                  } 
+                }, $sidebar_output);
               } 
               echo do_shortcode($sidebar_output); 
               ?>

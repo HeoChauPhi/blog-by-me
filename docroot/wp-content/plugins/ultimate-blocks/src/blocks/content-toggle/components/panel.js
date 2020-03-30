@@ -13,7 +13,7 @@ const { withState, compose } = wp.compose;
 
 const { withDispatch, withSelect } = wp.data;
 
-const { FormToggle, PanelBody, PanelRow } = wp.components;
+const { FormToggle, PanelBody, PanelRow, SelectControl } = wp.components;
 
 const attributes = {
 	index: {
@@ -47,6 +47,14 @@ const attributes = {
 	newBlockPosition: {
 		type: "string",
 		default: "none" //changes into above/below depending on which button is clicked
+	},
+	titleTag: {
+		type: "string",
+		default: "p"
+	},
+	preventCollapse: {
+		type: "boolean",
+		default: false
 	}
 };
 
@@ -56,7 +64,15 @@ class ContentTogglePanel extends Component {
 	}
 	render() {
 		const {
-			attributes,
+			attributes: {
+				theme,
+				titleColor,
+				panelTitle,
+				collapsed,
+				hasFAQSchema,
+				titleTag,
+				preventCollapse
+			},
 			setState,
 			setAttributes,
 			removeBlock,
@@ -66,13 +82,6 @@ class ContentTogglePanel extends Component {
 			parentID,
 			selectBlock
 		} = this.props;
-		const {
-			theme,
-			titleColor,
-			panelTitle,
-			collapsed,
-			hasFAQSchema
-		} = attributes;
 
 		if (parentID !== blockParentId) {
 			setAttributes({ parentID: blockParentId });
@@ -103,9 +112,29 @@ class ContentTogglePanel extends Component {
 							id="ub-content-toggle-state"
 							label={__("Collapsed")}
 							checked={collapsed}
-							onChange={() => setAttributes({ collapsed: !collapsed })}
+							onChange={_ => {
+								setAttributes({ collapsed: !collapsed });
+								if (!collapsed) {
+									setAttributes({ preventCollapse: false });
+								}
+							}}
 						/>
 					</PanelRow>
+					{!collapsed && (
+						<PanelRow>
+							<label htmlFor="ub-content-toggle-state">
+								{__("Prevent collapse")}
+							</label>
+							<FormToggle
+								id="ub-content-toggle-state"
+								label={__("Prevent collapse")}
+								checked={preventCollapse}
+								onChange={_ =>
+									setAttributes({ preventCollapse: !preventCollapse })
+								}
+							/>
+						</PanelRow>
+					)}
 				</PanelBody>
 				<PanelBody title={__("FAQ Schema")} initialOpen={true}>
 					<PanelRow>
@@ -116,7 +145,7 @@ class ContentTogglePanel extends Component {
 							id="ub-content-toggle-faq-schema"
 							label={__("Enable FAQ Schema")}
 							checked={hasFAQSchema}
-							onChange={() =>
+							onChange={_ =>
 								setAttributes({
 									hasFAQSchema: !hasFAQSchema
 								})
@@ -124,6 +153,28 @@ class ContentTogglePanel extends Component {
 						/>
 					</PanelRow>
 				</PanelBody>
+				<div
+					style={{
+						display: "grid",
+						gridTemplateColumns: "5fr 1fr",
+						padding: "0 16px"
+					}}
+				>
+					<p>{__("Select Heading Tag", "ultimate-blocks")}</p>
+					<SelectControl
+						options={[
+							{ value: "h1", label: __("H1", "ultimate-blocks") },
+							{ value: "h2", label: __("H2", "ultimate-blocks") },
+							{ value: "h3", label: __("H3", "ultimate-blocks") },
+							{ value: "h4", label: __("H4", "ultimate-blocks") },
+							{ value: "h5", label: __("H5", "ultimate-blocks") },
+							{ value: "h6", label: __("H6", "ultimate-blocks") },
+							{ value: "p", label: __("P", "ultimate-blocks") }
+						]}
+						value={titleTag}
+						onChange={titleTag => setAttributes({ titleTag })}
+					/>
+				</div>
 			</InspectorControls>,
 			<div
 				className="wp-block-ub-content-toggle-accordion"
@@ -134,7 +185,7 @@ class ContentTogglePanel extends Component {
 					style={{ backgroundColor: theme }}
 				>
 					<RichText
-						tagName="span"
+						tagName={titleTag}
 						style={{ color: titleColor }}
 						className="wp-block-ub-content-toggle-accordion-title"
 						value={panelTitle}

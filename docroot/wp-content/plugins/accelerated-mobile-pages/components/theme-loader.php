@@ -1,15 +1,24 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 }
-if ( 4 == $ampforwp_design_selector ) {
-	define('AMPFORWP_CUSTOM_THEME', AMPFORWP_PLUGIN_DIR . 'templates/design-manager/swift' );
-}
-elseif ( ! defined('AMPFORWP_CUSTOM_THEME') ) {
-	define('AMPFORWP_CUSTOM_THEME', AMPFORWP_MAIN_PLUGIN_DIR."/".$ampforwp_design_selector);
-}
-
-	require_once(  AMPFORWP_CUSTOM_THEME . '/functions.php' );
+	$amp_main_dir = AMPFORWP_PLUGIN_DIR . 'templates/design-manager/swift';
+	if ( 4 != $ampforwp_design_selector ) {
+		$amp_main_dir = WP_PLUGIN_DIR.'/'. esc_attr($ampforwp_design_selector);
+	}
+	$amp_theme_dir = apply_filters('ampforwp_theme_dir', $amp_main_dir);
+	if ( ! is_dir($amp_theme_dir)) {
+		$amp_theme_dir  = $amp_main_dir;
+	}
+	define('AMPFORWP_CUSTOM_THEME', $amp_theme_dir );
+	// Include functions.php 
+	$function_file =  AMPFORWP_CUSTOM_THEME . '/functions.php';
+	if ( ! file_exists($function_file)) {
+		$function_file = $amp_main_dir .'/functions.php';
+	}
+	if ( file_exists($function_file)){
+		require_once( $function_file );	
+	}
 	//Filter the Template files to override previous ones
 	add_filter( 'amp_post_template_file', 'ampforwp_designing_custom_template', 10, 3 );
 
@@ -245,6 +254,15 @@ elseif ( ! defined('AMPFORWP_CUSTOM_THEME') ) {
 	    // Polylang Frontpage #1779
 	    if ( 'single' === $type && ampforwp_polylang_front_page() && true == $redux_builder_amp['amp-frontpage-select-option'] ) {
 			$file = AMPFORWP_CUSTOM_THEME . '/page.php';
+		}
+		if ( ! file_exists($file)) {
+
+			$exploded_path  =  explode('/', $file);
+			$file_name  	= end($exploded_path);
+
+			$amp_fallback_theme_dir = AMPFORWP_PLUGIN_DIR . 'templates/design-manager/swift';
+
+			$file = $amp_fallback_theme_dir .'/'. $file_name;
 		}
 	 	return $file;
 	}

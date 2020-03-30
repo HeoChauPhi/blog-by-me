@@ -226,6 +226,10 @@ $defaultValues = array(
             'hasFAQSchema' => array(
                 'type' => 'boolean',
                 'default' => false
+            ),
+            'preventCollapse' => array(
+                'type' => 'boolean',
+                'default' => false
             )
         )
     ),
@@ -250,6 +254,14 @@ $defaultValues = array(
             'panelTitle' => array(
                 'type' => 'string',
                 'default' => ''
+            ),
+            'titleTag' => array(
+                'type' => 'string',
+                'default' => 'p'
+            ),
+            'preventCollapse' => array(
+                'type' => 'boolean',
+                'default' => false
             )
         )
     ),
@@ -733,6 +745,58 @@ $defaultValues = array(
             'starOutlineColor' => array(
                 'type' => 'string',
                 'default' => '#000000'
+            ),
+            'imageSize' => array(
+                'type' => 'number',
+                'default' => 100
+            ),
+            'brand' => array(
+                'type' => 'string',
+                'default' => ''
+            ),
+            'sku' => array(
+                'type' => 'string',
+                'default' => ''
+            ),
+            'identifier' => array(
+                'type' => 'string',
+                'default' => ''
+            ),
+            'identifierType' => array(
+                'type' => 'string',
+                'default' => 'gtin'
+            ),
+            'offerType' => array(
+                'type' => 'string',
+                'default' => 'Offer'
+            ),
+            'offerStatus' => array(
+                'type' => 'string',
+                'default' => 'InStock'
+            ),
+            'offerHighPrice' => array(
+                'type' => 'number',
+                'default' => 0
+            ),
+            'offerLowPrice' => array(
+                'type' => 'number',
+                'default' => 0
+            ),
+            'offerCount' => array(
+                'type' => 'number',
+                'default' => 1
+            ),
+            'offerPrice' => array(
+                'type' => 'number',
+                'default' => 0
+            ),
+            'offerCurrency' => array(
+                'type' => 'string',
+                'default' => 'USD'
+            ),
+            'offerExpiry' => array(
+                'type' => 'number',
+                'default' => time() + 10800
             )
         )
     ),
@@ -1009,6 +1073,17 @@ $defaultValues = array(
             'enableSmoothScroll' => array(
                 'type' => 'boolean',
                 'default' => false
+            ),
+            'titleAlignment' => array(
+                'type' => 'string',
+                'default' => 'left'
+            ),
+            'gaps' => array(
+                'type' => 'array',
+                'default' => array(),
+                'items' => array(
+                    'type' => 'number'
+                )
             )
         )
     ),
@@ -1074,25 +1149,25 @@ $defaultValues = array(
                 'type' => 'string',
                 'default' => ''
             ),
-            'categories'          => array(
+            'categories' => array(
                 'type' => 'string',
             ),
-            'className'           => array(
+            'className' => array(
                 'type' => 'string',
             ),
-            'amountPosts'         => array(
+            'amountPosts' => array(
                 'type'    => 'number',
                 'default' => 6,
             ),
-            'checkPostDate'     => array(
+            'checkPostDate' => array(
                 'type'    => 'boolean',
                 'default' => true,
             ),
-            'checkPostExcerpt'  => array(
+            'checkPostExcerpt' => array(
                 'type'    => 'boolean',
                 'default' => true,
             ),
-            'checkPostAuthor'   => array(
+            'checkPostAuthor' => array(
                 'type'    => 'boolean',
                 'default' => true,
             ),
@@ -1100,47 +1175,47 @@ $defaultValues = array(
                 'type'    => 'boolean',
                 'default' => true,
             ),
-            'checkPostLink'     => array(
+            'checkPostLink' => array(
                 'type'    => 'boolean',
                 'default' => true,
             ),
-            'checkPostTitle'    => array(
+            'checkPostTitle' => array(
                 'type'    => 'boolean',
                 'default' => true,
             ),
-            'postLayout'          => array(
+            'postLayout' => array(
                 'type'    => 'string',
                 'default' => 'grid',
             ),
-            'columns'             => array(
+            'columns' => array(
                 'type'    => 'number',
                 'default' => 2,
             ),
-            'width'               => array(
+            'width' => array(
                 'type'    => 'string',
                 'default' => 'wide',
             ),
-            'order'               => array(
+            'order' => array(
                 'type'    => 'string',
                 'default' => 'desc',
             ),
-            'orderBy'             => array(
+            'orderBy' => array(
                 'type'    => 'string',
                 'default' => 'date',
             ),
-            'readMoreText'        => array(
+            'readMoreText' => array(
                 'type'    => 'string',
                 'default' => 'Continue Reading',
             ),
-            'offset'              => array(
+            'offset' => array(
                 'type'    => 'number',
                 'default' => 0,
             ),
-            'excerptLength'       => array(
+            'excerptLength' => array(
                 'type'    => 'number',
                 'default' => 55,
             ),
-            'postType'            => array(
+            'postType' => array(
                 'type'    => 'string',
                 'default' => 'post',
             ),

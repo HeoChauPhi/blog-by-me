@@ -15,10 +15,18 @@ if ( isset($redux_builder_amp['footer-type']) && '1' == $redux_builder_amp['foot
 		<div class="cntr">
 			<div class="f-w">
 				<?php 
+				$sidebar_output = '';
 				$sanitized_sidebar = ampforwp_sidebar_content_sanitizer('swift-footer-widget-area');
 				if ( $sanitized_sidebar) {
 					$sidebar_output = $sanitized_sidebar->get_amp_content();
 					$sidebar_output = apply_filters('ampforwp_modify_sidebars_content',$sidebar_output);
+					$sidebar_output = preg_replace_callback('/<form(.*?)>(.*?)<\/form>/s', function($match){
+	                if(strpos($match[1], 'target=') === false){
+	                    return '<form'.$match[1].' target="_top">'.$match[2].'</form>';
+	                }else{
+	                    return '<form'.$match[1].'>'.$match[2].'</form>';
+	                } 
+	                }, $sidebar_output);
 				}
 	            echo do_shortcode($sidebar_output); // amphtml content, no kses
 				?>
@@ -110,10 +118,10 @@ if( (is_single() && $redux_builder_amp['enable-single-social-icons']) || (is_pag
 			<a title="facebook share" class="s_fb" target="_blank" <?php ampforwp_nofollow_social_links(); ?> href="https://www.facebook.com/sharer.php?u=<?php echo esc_url($amp_permalink); ?>"></a>
 		</li>
 		<?php } ?>
-		<?php if(true == ampforwp_get_setting('enable-single-facebook-share-messenger')){?>
+		<?php if(true == ampforwp_get_setting('enable-single-facebook-share-messenger')  && $amp_permalink_fb_messenger!=''){?>
 			<li>
 			<a title="facebook share messenger"  <?php ampforwp_nofollow_social_links(); ?> target="_blank" href="fb-messenger://share/?link=<?php echo esc_url($amp_permalink_fb_messenger); ?>">
-				<div class="amp-social-icon amp-social-facebookmessenger">
+				<div class="a-so-i a-so-facebookmessenger">
 					<amp-img src="<?php echo esc_url(AMPFORWP_IMAGE_DIR . '/messenger.png') ?>" width="20" height="20" />
 				</div>
 			</a>
@@ -123,6 +131,7 @@ if( (is_single() && $redux_builder_amp['enable-single-social-icons']) || (is_pag
 		$data_param = '';
 		if(ampforwp_get_setting('enable-single-twitter-share')){
 			$data_param_data = ampforwp_get_setting('enable-single-twitter-share-handle');
+			$data_param_data = str_replace('@', '', $data_param_data);
 			$data_param = ( '' == $data_param_data ) ? '' : '&via='.$data_param_data.''; ?>
 		<li>
 			<a title="twitter share" class="s_tw" target="_blank" <?php ampforwp_nofollow_social_links(); ?> href="https://twitter.com/intent/tweet?url=<?php echo esc_url($twitter_amp_permalink); ?>&text=<?php echo esc_attr(ampforwp_sanitize_twitter_title(get_the_title())); ?><?php echo esc_attr($data_param); ?>">

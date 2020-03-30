@@ -75,10 +75,11 @@ function amp_icon_css(){
 		// TODO: https://github.com/ahmedkaludi/accelerated-mobile-pages/issues/2651 
 	    echo $value;
 	}
-
+	$icon_url = plugin_dir_url(__FILE__);
+    $icon_url = ampforwp_font_url($icon_url);
 	// Add @font-face for Design-1,2,3
 	if ( 1 == $redux_builder_amp['amp-design-selector'] || 2 == $redux_builder_amp['amp-design-selector'] || 3 == $redux_builder_amp['amp-design-selector'] ) { ?>
-		@font-face {font-family: 'icomoon';font-style: normal;font-weight: normal;font-display: swap;src:  local('icomoon'), local('icomoon'), url('<?php echo esc_url(plugin_dir_url(__FILE__)) ?>icomoon/icomoon.ttf');}
+		@font-face {font-family: 'icomoon';font-style: normal;font-weight: normal;font-display: swap;src:  local('icomoon'), local('icomoon'), url('<?php echo esc_url($icon_url) ?>icomoon/icomoon.ttf');}
 		[class^="icon-"], [class*=" icon-"] {font-family: 'icomoon';speak: none;font-style: normal;font-weight: normal;font-variant: normal;text-transform: none;line-height: 1;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;}
 	<?php }
 }
@@ -105,23 +106,19 @@ function amp_logo(){
 
 // Title
 function amp_title(){
-	global $redux_builder_amp, $post;
-	$ID = '';
-	if( ampforwp_is_front_page() && ampforwp_get_frontpage_id() ){
-		if( $redux_builder_amp['ampforwp-title-on-front-page'] ) {
-			$ID = ampforwp_get_frontpage_id();
-		}
-	}
-	elseif ( ampforwp_polylang_front_page() ) {
+	global $post;
+	$ID = ampforwp_get_the_ID();
+	if ( ampforwp_polylang_front_page() ) {
 		$ID = pll_get_post(get_option('page_on_front'));
 	}
-	else
-		$ID = $post->ID;
+	elseif( ampforwp_is_front_page() && ampforwp_get_setting('ampforwp-title-on-front-page') == false) {
+			$ID = null;
+		}
 	if( $ID!=null ){
 		do_action('ampforwp_above_the_title'); 
 		$ampforwp_title = get_the_title($ID);
 		$ampforwp_title =  apply_filters('ampforwp_filter_single_title', $ampforwp_title);
-		if(!empty($ampforwp_title) && ampforwp_default_logo()){
+		if(!empty($ampforwp_title) && (ampforwp_default_logo() || ampforwp_get_setting('opt-media','url')!='')){
 		?>
 			<h1 class="amp-post-title"><?php echo wp_kses_data( $ampforwp_title ); ?></h1>
 		<?php
@@ -402,6 +399,7 @@ function amp_header_core(){
 		</head>
 		<body <?php ampforwp_body_class($bodyClass); ?>>
 		<?php do_action('amp_start', $thisTemplate); ?>
+		<?php do_action('ampforwp_admin_menu_bar_front'); ?>
 		<?php do_action('ampforwp_body_beginning', $thisTemplate);  
 }
 
@@ -465,7 +463,10 @@ function amp_back_to_top_link(){
 	 global $redux_builder_amp;
     if(true == ampforwp_get_setting('ampforwp-footer-top')){?>
         <a id="scrollToTopButton" title="back to top" on="tap:backtotop.scrollTo(duration=500)" class="btt" ></a> 
-        <?php if(ampforwp_get_setting('ampforwp-amp-convert-to-wp')==false){?>
+        <?php 
+        global $wp;
+        $current_url = home_url(add_query_arg(array($_GET), $wp->request));
+        if(ampforwp_get_setting('ampforwp-amp-convert-to-wp')==false || (strpos( $current_url,'/amp')!=false || strpos( $current_url,'?amp')!=false)){?>
         <amp-animation id="showAnim"
 		  layout="nodisplay">
 		  <script type="application/json">
@@ -706,6 +707,8 @@ function ampforwp_backtotop_global_css(){?>
 	.rtl amp-carousel {direction: ltr;}
 	.rtl .amp-menu .toggle:after{left:0;right:unset;}
 	.sharedaddy li{display:none}
+	sub {vertical-align: sub;font-size: small;}
+	sup {vertical-align: super;font-size: small;}
 <?php if( true == ampforwp_get_setting('ampforwp-footer-top') ) { ?>
   .btt{
       position: fixed;
@@ -732,8 +735,39 @@ function ampforwp_backtotop_global_css(){?>
     text-align: center;
     line-height: 1.5;
   }
-<?php } }
+<?php } 
+	if ( ! ampforwp_woocommerce_conditional_check() ) {
+		if ( is_singular() || is_home() && true == ampforwp_get_setting( 'amp-frontpage-select-option' ) && ampforwp_get_blog_details() == false && ! checkAMPforPageBuilderStatus( ampforwp_get_the_ID() ) ) { ?>
+            /* Tables */
+            .wp-block-table{ min-width :240px;}
+            table.wp-block-table.alignright,table.wp-block-table.alignleft,table.wp-block-table.aligncenter{width: auto;}
+            table.wp-block-table.aligncenter{width: 50%;}
+            table.wp-block-table.alignfull,table.wp-block-table.alignwide{display: table;}
+            table { display: inline-table; overflow-x: auto; }
+            table a:link { font-weight: bold; text-decoration: none; }
+            table a:visited { color: #999999; font-weight: bold; text-decoration: none; }
+            table a:active, table a:hover { color: #bd5a35; text-decoration: underline; }
+            table { font-family: Arial, Helvetica, sans-serif; color: #666; font-size: 15px; text-shadow: 1px 1px 0px #fff; background: #eee; margin: 0px; width: 95%; }
+            table th { padding: 21px 25px 22px 25px; border-top: 1px solid #fafafa; border-bottom: 1px solid #e0e0e0; background: #ededed; }
+            table th:first-child { text-align: left; padding-left: 20px; }
+            table tr:first-child th:first-child { -webkit-border-top-left-radius: 3px; border-top-left-radius: 3px; }
+            table tr:first-child th:last-child { -webkit-border-top-right-radius: 3px; border-top-right-radius: 3px; }
+            table tr { text-align: center; padding-left: 20px; }
+            table td:first-child {padding-left: 20px; border-left: 0; }
+            table td { padding: 18px; border-top: 1px solid #ffffff; border-bottom: 1px solid #e0e0e0; border-left: 1px solid #e0e0e0; background: #fafafa; background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));  }
+            table tr.even td { background: #f6f6f6; background: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f6f6f6));  }
+            table tr:last-child td {border-bottom: 0;}
+            table tr:last-child td:first-child { -webkit-border-bottom-left-radius: 3px; border-bottom-left-radius: 3px; }
+            table tr:last-child td:last-child {  -webkit-border-bottom-right-radius: 3px; border-bottom-right-radius: 3px; }
+            table tr:hover td { background: #f2f2f2; background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));}
+            @media screen and (min-width: 650px) { table {display: inline-table;}  }
 
+		<?php }
+	}?>
+    .has-text-align-left { text-align: left;}
+    .has-text-align-right { text-align: right;}
+    .has-text-align-center { text-align: center;}
+<?php }
 // Fallback for amp_call_now #2782
 if ( !function_exists('amp_call_now') ) {
 	function amp_call_now(){
@@ -756,7 +790,7 @@ function ampforwp_addThis_support(){
 				$addthisWidth = 320; 
 			}
 			if( ampforwp_get_setting('addthis-inline-share') == true){
-				$amp_addthis .= '<amp-addthis width="'.$addthisWidth.'" height="92" data-pub-id="'.esc_attr($data_pub_id).'" data-widget-id="'. esc_attr($data_widget_id).'"></amp-addthis>';
+				$amp_addthis .= '<div class="amp-wp-content"><amp-addthis width="'.$addthisWidth.'" height="92" data-pub-id="'.esc_attr($data_pub_id).'" data-widget-id="'. esc_attr($data_widget_id).'"></amp-addthis></div>';
 			}
 
 			do_action('ampforwp_before_social_icons_hook');

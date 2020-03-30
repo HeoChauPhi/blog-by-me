@@ -32,10 +32,6 @@
 		</p>
 
 		<p>
-			<strong><?php $easy_updates_manager->easy_updates_manager_url('https://getkeyy.com/', __('Keyy:', 'stops-core-theme-and-plugin-updates')); ?></strong> <?php echo htmlspecialchars(__('Simple & secure login with a wave of your phone', 'stops-core-theme-and-plugin-updates')); ?>
-		</p>
-
-		<p>
 			<strong><?php $easy_updates_manager->easy_updates_manager_url('https://metaslider.com', 'MetaSlider');?>: </strong> <?php echo __('Add style and flare easily with beautifully-designed sliders with the #1 WP slider plugin', 'stops-core-theme-and-plugin-updates'); ?>
 		</p>
 

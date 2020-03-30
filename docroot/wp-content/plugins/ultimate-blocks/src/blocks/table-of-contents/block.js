@@ -45,6 +45,10 @@ const attributes = {
 		type: "string",
 		default: ""
 	},
+	gaps: {
+		type: "array",
+		default: []
+	},
 	allowToCHiding: {
 		type: "boolean",
 		default: false
@@ -64,6 +68,10 @@ const attributes = {
 	enableSmoothScroll: {
 		type: "boolean",
 		default: false
+	},
+	titleAlignment: {
+		type: "string",
+		default: "left"
 	}
 };
 

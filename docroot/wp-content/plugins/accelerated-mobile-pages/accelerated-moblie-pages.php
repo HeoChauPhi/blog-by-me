@@ -3,7 +3,7 @@
 Plugin Name: Accelerated Mobile Pages
 Plugin URI: https://wordpress.org/plugins/accelerated-mobile-pages/
 Description: AMP for WP - Accelerated Mobile Pages for WordPress
-Version: 1.0.8
+Version: 1.0.37
 Author: Ahmed Kaludi, Mohammed Kaludi
 Author URI: https://ampforwp.com/
 Donate link: https://www.paypal.me/Kaludi/25
@@ -20,7 +20,7 @@ define('AMPFORWP_PLUGIN_DIR_URI', plugin_dir_url(__FILE__));
 define('AMPFORWP_DISQUS_URL',plugin_dir_url(__FILE__).'includes/disqus.html');
 define('AMPFORWP_IMAGE_DIR',plugin_dir_url(__FILE__).'images');
 define('AMPFORWP_MAIN_PLUGIN_DIR', plugin_dir_path( __DIR__ ) );
-define('AMPFORWP_VERSION','1.0.8');
+define('AMPFORWP_VERSION','1.0.37');
 define('AMPFORWP_EXTENSION_DIR',plugin_dir_path(__FILE__).'includes/options/extensions');
 if(!defined('AMPFROWP_HOST_NAME')){
 	$urlinfo = get_bloginfo('url');
@@ -635,7 +635,6 @@ add_action('init','ampforwp_plugin_init', 9);
 * customized output widget
 * to be used be used in before or after Loop
 */
-ampforwp_require_file( AMPFORWP_PLUGIN_DIR.'/templates/category-widget.php' );
 ampforwp_require_file( AMPFORWP_PLUGIN_DIR.'/templates/woo-widget.php' );
 
 
@@ -732,7 +731,6 @@ function amp_update_db_check() {
 
 
 // Admin notice for AMP WordPress Theme
-add_action('admin_notices', 'ampforwp_ampwptheme_notice');
 function ampforwp_ampwptheme_notice() {
  	$theme = '';
 	$theme = wp_get_theme(); // gets the current theme
@@ -905,6 +903,7 @@ if(!function_exists('ampforwp_get_setup_info')){
             $ux_content = ampforwp_get_setting('opt-media','url');
 		}else if($ux_option=="ampforwp-ux-analytics-section"){
             $ga_field       = ampforwp_get_setting('ga-feild');
+            $ga_field_gtm     = ampforwp_get_setting('amp-gtm-id');
             $amp_fb_pixel_id = ampforwp_get_setting('amp-fb-pixel-id');
             $sa_feild = ampforwp_get_setting('sa-feild');
             $pa_feild = ampforwp_get_setting('pa-feild');
@@ -924,6 +923,7 @@ if(!function_exists('ampforwp_get_setup_info')){
             $analytics_txt = "";
             $analytic_arr = array();
             if(ampforwp_get_setting('ampforwp-ga-switch') && $ga_field!="UA-XXXXX-Y" && $ga_field!=""){$analytic_arr[]="Google Analytics";}
+            if(ampforwp_get_setting('amp-use-gtm-option') && $ga_field_gtm!="" && $ga_field_gtm!=""){$analytic_arr[]="Google Tag Manager";}
             if(ampforwp_get_setting('amp-fb-pixel') && $amp_fb_pixel_id!=""){$analytic_arr[]="Facebook Pixel";}
            if(ampforwp_get_setting('ampforwp-Segment-switch') && $sa_feild!="SEGMENT-WRITE-KEY" && $sa_feild!=""){$analytic_arr[]="Segment Analytics";}
             if(ampforwp_get_setting('ampforwp-Piwik-switch') && $pa_feild!="#" && $pa_feild!=""){ $analytic_arr[]="Matomo Analytics";}
@@ -1112,6 +1112,18 @@ function ampforwp_add_plugin_meta_links($meta_fields, $file) {
 // AMPforWP Global Data variable
 $ampforwp_data = array();
 
+if(!function_exists('sanitize_hex_color')){
+	function sanitize_hex_color( $color ) {
+	    if ( '' === $color ) {
+	        return '';
+	    }
+
+	    // 3 or 6 hex digits, or the empty string.
+	    if ( preg_match( '|^#([A-Fa-f0-9]{3}){1,2}$|', $color ) ) {
+	        return $color;
+	    }
+	}
+}
 // color sanitizer
 function ampforwp_sanitize_color( $color ) {
     if ( empty( $color ) || is_array( $color ) )
@@ -1152,7 +1164,6 @@ if ( false == get_transient('ampforwp-pm-disabler') ) {
 	}
 
 }
-add_action('admin_notices', 'ampforwp_plugins_manager_notice');
 function ampforwp_plugins_manager_notice(){
 	if ( true == get_transient('ampforwp-pm-disabler') ) { ?>
 		<div id="ampforwp_pluginmanager" class="notice-warning settings-error notice is-dismissible"><p><b><?php echo esc_html__('Attention: ','accelerated-mobile-pages');?></b><?php echo esc_html__('AMPforWP Plugin Manager has been deactivated and requires an upgrade. Please','accelerated-mobile-pages');?> <b><a target="_blank" href=<?php echo esc_url('https://ampforwp.com/plugins-manager/?update=plugins-manager#utm_source=plugin-page&utm_medium=plugin-manager-update&utm_campaign=update-notice');?>><?php echo esc_html__('Download &amp; install the latest version','accelerated-mobile-pages');?></a></b><?php echo esc_html__(' for free.','accelerated-mobile-pages');?>
@@ -1321,7 +1332,6 @@ function ampforwp_redux_options_remover($sections){
 }
 
 // AMP with AMPforWP notice #2287
-add_action( 'admin_notices', 'ampforwp_automattic_activation' );
 function ampforwp_automattic_activation(){
 
 	if ( function_exists('amp_activate') && get_transient( 'ampforwp_automattic_activation_notice' ) == false) { 
@@ -1341,67 +1351,52 @@ function ampforwp_automattic_notice_delete(){
 	exit();
 }
 
-add_action('admin_init','ampforwp_replace_redux_comments');
-function ampforwp_replace_redux_comments(){
-
+add_action('current_screen','ampforwp_replace_redux_comments');
+function ampforwp_replace_redux_comments($screen){
 	if(current_user_can( 'manage_options' )){
-	$replaced_redux_comments = get_transient('replaced_redux_comments_updated');
-
-		if(!$replaced_redux_comments){
-		    $redux_val   = get_option('redux_builder_amp',array());  
-
-		    if ( empty($redux_val) || ! is_array($redux_val)) {
-				return;
-		    }
-
-		    $search = '/******* Paste your Custom CSS in this Editor *******/';
-		    $rep = str_replace("$search", "", $redux_val);
-
-			//FOR GA
-			$pattern 	= '/\s*/m';
-			$replace 	= '';
-
-			$ga_val   	= $redux_val['ampforwp-ga-field-advance'];
-			$rep 		= preg_replace( $pattern, $replace,$ga_val);
-			$search 	= '/***EnteryourAdvancedAnalyticscodehere*/';
-			$rep 		= str_replace("$search", "", $rep);
-			$search 	= '//ReplacethiswithyourTrackingID';
-			$rep 		= str_replace("$search", "", $rep);
-			$jsonstr 	= "";
-
-			for($i=0;$i<strlen($rep);$i++){
-				$resp = $rep[$i];
-				$jsonstr.=$resp;
-				if($resp=='{' || $resp=='}'){
-					$jsonstr.=PHP_EOL;
-				}
-			}
-		    $redux_val['ampforwp-ga-field-advance'] = $jsonstr;
-		    // GA CLOSE
-		      
-			//FOR GTM
-			$gml_val   	= $redux_val['ampforwp-gtm-field-advance'];
-			$rep 		= preg_replace( $pattern, $replace,$gml_val);
-			$search 	= '/***EnteryourAdvancedAnalyticscodehere*/';
-			$rep 		= str_replace("$search", "", $rep);
-	      	$search 	= '/*ReplacethiswithyourTrackingID*/';
-	      	$rep 		= str_replace("$search", "", $rep);
-
-			$jsonstr 	= "";
-			for($i=0;$i<strlen($rep);$i++){
-				$resp = $rep[$i];
-				$jsonstr.=$resp;
-				if($resp=='{' || $resp=='}'){
-					$jsonstr.=PHP_EOL;
-				}
-			}
-			//GTM CLOSE
-
-			$redux_val['ampforwp-gtm-field-advance'] = $jsonstr;
-			update_option('redux_builder_amp',$redux_val);
-			set_transient('replaced_redux_comments_updated',1);
-	    }
- 	}
+		if ( 'toplevel_page_amp_options' == $screen->base ) {
+			$replaced_redux_comments = get_transient('replaced_redux_comments_updated');
+			if(!$replaced_redux_comments){
+			    $redux_val   = get_option('redux_builder_amp',array());  
+			    if ( empty($redux_val) || ! is_array($redux_val)) {
+					return;
+			    }
+			    $ga_val   	= $redux_val['ampforwp-ga-field-advance'];
+			    if(preg_match('/\/\*(.*?)\*\//s', $ga_val)){
+			    	$ga_val = preg_replace('/\/\*(.*?)\*\//s', '', $ga_val);
+			    	$redux_val['ampforwp-ga-field-advance'] = $ga_val;
+			    	update_option('redux_builder_amp',$redux_val);
+			    }
+			    if(preg_match('/\/\/Replace this with your Tracking ID/', $ga_val)){
+			    	$ga_val = preg_replace('/\/\/Replace this with your Tracking ID/', '', $ga_val);
+			    	$redux_val['ampforwp-ga-field-advance'] = $ga_val;
+			    	update_option('redux_builder_amp',$redux_val);
+			    }
+			    // GA CLOSE
+			      
+				//FOR GTM
+			    $gml_val   	= $redux_val['ampforwp-gtm-field-advance'];
+			    if(preg_match('/\/\*(.*?)\*\//s', $gml_val)){
+			    	$gml_val = preg_replace('/\/\*(.*?)\*\//s', '', $gml_val);
+			    	$redux_val['ampforwp-gtm-field-advance'] = $gml_val;
+			    	update_option('redux_builder_amp',$redux_val);
+			    }
+			    if(preg_match('/\/\/Replace this with your Tracking ID/', $gml_val)){
+			    	$gml_val = preg_replace('/\/\/Replace this with your Tracking ID/', '', $gml_val);
+			    	$redux_val['ampforwp-gtm-field-advance'] = $gml_val;
+			    	update_option('redux_builder_amp',$redux_val);
+			    }
+			    // GLOBAL CSS EDITOR
+			    $css_editor   	= $redux_val['css_editor'];
+			    if(preg_match('/\/\*(.*?)\*\//s', $css_editor)){
+			    	$css_editor = preg_replace('/\/\*(.*?)\*\//s', '', $css_editor);
+			    	$redux_val['css_editor'] = $css_editor;
+			    	update_option('redux_builder_amp',$redux_val);
+			    }
+			    set_transient('replaced_redux_comments_updated',1);
+		 	}
+		}
+	}
 }
 if(!function_exists('ampforwp_wp_plugin_action_link')){
 	function ampforwp_wp_plugin_action_link( $plugin, $action = 'activate' ) {

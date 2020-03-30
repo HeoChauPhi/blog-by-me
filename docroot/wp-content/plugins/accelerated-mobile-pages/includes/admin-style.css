@@ -899,7 +899,7 @@ span#ampforwp-clear-clcss-msg {line-height: 25px;}
 .backtoextensionlist{
     cursor: pointer;
 }
-.redux-main #redux-sticky{display: none}
+.ampforwp-redux-container .redux-main #redux-sticky{display: none}
 
 #info-ampforwp-beta-mode-notice{color: #263238; margin: 20px; background: #FFF9C4;border-color: #908204;}
 
@@ -2032,4 +2032,42 @@ div#section-ampforwp-ux-section::after,div#section-ampforwp-ux-section-right::af
     }
 
 
+}
+.redux-container-import_export h4{
+    margin-bottom:10px;
+}
+.redux-container-import_export #redux-export-code-dl{
+    display: inline-block;
+} 
+.dashicons.spin {
+   animation: dashicons-spin 1s infinite;
+   animation-timing-function: linear;
+}
+
+@keyframes dashicons-spin {
+   0% {
+      transform: rotate( 0deg );
+   }
+   100% {
+      transform: rotate( 360deg );
+   }
+}
+.redux-ampforwp-ext-deactivate {
+    margin-top: 5px;
+}
+i.dashicons.dashicons-before.dashicons-update {
+    margin: 7px 2px 0 0;
+    }
+.license-tenure.expire{
+    color:red;
+}
+.license-renew-a,.license-renew-a:hover{
+    background: #303e9f;
+    color: #fff;
+    text-decoration: none;
+    padding: 1px 7px 3px;
+    border-radius: 13px;
+}
+fieldset#redux_builder_amp-ampforwp-onesignal-positioning {
+    padding: 0;
 }

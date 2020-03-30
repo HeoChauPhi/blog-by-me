@@ -133,7 +133,7 @@ function ampforwp_gdpr_css(){
 		  bottom: 0;
 		  left: 0;
 		  right: 0;
-		  position: fixed;
+		  position: relative;
 		} 
 		@media(max-width:768px){
 			.gdpr_w{width: 85%;margin:0 auto;padding:1.5rem;}
@@ -182,7 +182,7 @@ function ampforwp_gdpr_css(){
 		.gdpr_yn form{display: inline;}
 		.gdpr_yn button{background: #FFFC26;border: none;color: #333;padding: 8px 40px;font-size: 15px;margin: 0 3px;font-weight: 600;cursor: pointer;}
 		.gdpr_yn .gdpr_n{background: transparent;}
-		amp-consent{margin-left: 10px;top: 2px;width: auto;background: transparent;margin:0;width:100%;}
+		amp-consent{position: relative;margin-left: 10px;top: 2px;width: auto;background: transparent;margin:0;width:100%;}
 		.gdpr_fmi span, .gdpr_fmi a:before{
 		  display:none;
 		}
@@ -249,8 +249,8 @@ function ampforwp_gdpr_css(){
 		}
 		<?php 
 	} ?>
-	amp-consent.amp-active{
-	    z-index:0;
+	footer amp-consent.amp-active {
+	    z-index:9999;
 	    position: inherit;
 	}	
 <?php }

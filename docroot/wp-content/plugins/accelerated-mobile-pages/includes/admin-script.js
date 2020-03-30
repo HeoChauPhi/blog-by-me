@@ -118,6 +118,60 @@ jQuery(function($) {
             $(this).find('.display_header').append('<span class="search-wrapper"><input  class="redux_field_search" name="" type="text" placeholder="Search the controls" style="display:none"/><span class="redux-amp-search-icon"><i class="dashicons-before dashicons-search"></i></span></span>');
             $('.redux-amp-search-icon').click(function(){
                 $('.redux_field_search').toggle('slide');
+                var val = $('.redux_field_search').val();
+                var display = $('.redux_field_search').css('display');
+                if(val!='' && display=='block'){
+                    $('.redux_field_search').val('');
+                     var parent = jQuery('.redux_field_search').parents('.redux-container:first');
+                     var expanded_options = parent.find('.expand_options');
+                     if (expanded_options.hasClass('expanded')) {
+                        expanded_options.click();
+                        parent.find('.redux-main').removeClass('redux-search');
+                     }
+                    //parent.find('.redux-section-field, .redux-info-field, .redux-notice-field, .redux-container-group, .redux-section-desc, .redux-group-tab h3').show();
+
+                    if($('.redux-group-tab-link-li.active').length>0){
+                        var rel = $('.redux-group-tab-link-li.active a').attr('data-rel');
+                        var selector = 'div#'+rel+'_section_group';
+                        jQuery(selector).show();
+                        jQuery(selector).css('display','block');
+
+                    }else{
+                        $('.redux-group-tab-link-li.activeChild').click();
+                        $('div#'+rel+'_section_group').show();
+                        $('#'+rel+'_section_group').css('display','block');
+                    }
+                    parent.find('.redux-field-container').each(function() {
+                        $(this).parents('tr:first').show();
+                    });
+                     parent.find('.redux-group-tab').each(function() {
+                         $(this).find("div.redux-section-field").each(function(){
+                            var item = $(this);
+                            if(item.hasClass('hide')){
+                                return false;
+                            }
+                            var divSectionId = $(this).attr('id');
+                            var splitResult = divSectionId.split("-");
+                            splitResult.splice(1, 0, "table");
+                            var divTableId = splitResult.join("-");
+                            var totalTr = $("#"+divTableId).find('tr:visible').length;
+                            if(totalTr>0){
+                                $(this).show();
+                            }
+                        });
+                        $(this).find('.form-table-section tbody').each(function(){
+                            $(this).find('tr').each(function (i, el) {
+                                var item = $(this);
+                                if(item.hasClass('hide')){
+                                    item.hide();
+                                }
+                                if(item.hasClass('redux-section-indent-start')){
+                                    item.hide();
+                                }
+                            });
+                        });
+                    });
+                }
             });
             reduxOptionSearch();
         }
@@ -666,7 +720,69 @@ $(".redux-ampforwp-ext-activate").click(function(){
 })
 
 //Deactivate License key
+function AMPforwpreadCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(";");
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==" ") c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
 function deactivatelicence(){
+    $(".ampforwp-ext-refresh").click(function(){
+    var currentThis = $(this);
+    var plugin_id = currentThis.attr("id");
+
+    var today = new Date();
+    var lastcheck = AMPforwpreadCookie('plugin_refresh_check');
+    lastcheck = new Date(lastcheck);
+    console.log(lastcheck+ " true");
+    var diffDays = -1;
+    if( typeof lastcheck != undefined){
+        var diffTime = Math.abs(today.getTime() - lastcheck.getTime());
+        var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+    }
+     var expireDate = new Date(jQuery('[name="redux_builder_amp[amp-license]['+plugin_id+'][all_data][expires]"]').val());
+    var diffTime = Math.abs( expireDate.getTime()-today.getTime() );
+    var expireDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+    if(diffDays==-1 || diffDays>1 || expireDays<1){
+        currentThis.text("Please wait...")
+        document.cookie = "plugin_refresh_check="+today;
+        var secure_nonce = currentThis.parents("li").attr('data-ext-secure');
+        $.ajax({
+                url: ajaxurl,
+                method: 'post',
+                data: {action: 'ampforwp_get_licence_activate_update',
+                        update_check: 'yes',
+                       ampforwp_license_activate:plugin_id,
+                       verify_nonce: secure_nonce
+                        },
+                dataType: 'json',
+                success: function(response){
+                    currentThis.parents("li").find(".license-tenure").text('')
+                    currentThis.parents("li").find('.afw-license-response-message').remove();
+                    if(response.status=='200'){
+                        var expireData = new Date(response.other.all_data.expires);
+                        var today = new Date();
+                        var diffTime = Math.abs( expireData.getTime()-today.getTime() );
+                        var expireDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                        currentThis.parents("li").find(".license-tenure").text(expireDays+" Days Remaining")
+                    }else{
+                        currentThis.parents("li").find('.license-tenure').text(response.message);
+                    }
+                }
+            })
+        currentThis.html('<i class="dashicons-before dashicons-update"></i>Refresh');
+
+     }else{  
+        $(".dashicons").addClass( 'spin' );
+        setTimeout( function() {
+            $(".dashicons").removeClass( 'spin' );}, 3000 );   
+
+    }
+});
 $(".redux-ampforwp-ext-deactivate").click(function(){
     var currentThis = $(this);
     var plugin_id = currentThis.attr("id");
@@ -952,12 +1068,11 @@ jQuery(document).ready(function($) {
         }
     },10);
     $(".redux-group-tab-link-li").click(function(){
-        var this_c_val = $(this).children('a').children('span.group_title').html();
         if($(this).hasClass('ampforwp-new-ux')){
             $('#redux-footer-sticky').hide();
             $('#redux-footer-sticky #redux-footer').addClass("hide");
         }else{
-            if(this_c_val=="Settings" || this_c_val=="Design"){
+            if($(this).hasClass('amp-opt-settings') || $(this).hasClass('amp-opt-design')){
                 if($('#redux-footer-sticky #redux-footer').hasClass('hide')){
                     $('#redux-footer-sticky').show();
                     $('#redux-footer-sticky #redux-footer').removeClass("hide");
@@ -972,7 +1087,9 @@ jQuery(document).ready(function($) {
         // Save
         window.onbeforeunload = null;
         if ( redux.args.ajax_save === true ) {
-            $.redux.ajax_save( $current, true );
+            setTimeout(function(){
+                $.redux.ajax_save( $current, true );
+            },1);
         }
         
     }
@@ -1115,6 +1232,7 @@ jQuery(document).ready(function($) {
             button = "SET UP";
         }else if(active_drower=='ampforwp-ux-analytics-section'){
             var ga_field       = $('#ga-feild').val();
+            var ga_field_gtm    = $('#amp-gtm-id').val();
             var amp_fb_pixel_id = $('#amp-fb-pixel-id').val();
             var sa_feild = $('#sa-feild').val();
             var pa_feild = $('#pa-feild').val();
@@ -1136,6 +1254,7 @@ jQuery(document).ready(function($) {
                 var data_href = $(this).attr('data-href');
                 var hasCls  = $(this).hasClass('hide');
                 if(ga_field!="UA-XXXXX-Y" && ga_field!="" && !hasCls && data_href=='ampforwp-ga-switch'){analytic_arr.push("Google Analytics");}
+                if(ga_field_gtm!="" && !hasCls && data_href=='amp-use-gtm-option'){analytic_arr.push("Google Tag Manager");}
                 if(amp_fb_pixel_id!="" && !hasCls && data_href=='amp-fb-pixel'){analytic_arr.push("Facebook Pixel");}
                 if(sa_feild!="SEGMENT-WRITE-KEY" && sa_feild!="" && !hasCls && data_href=='ampforwp-Segment-switch'){analytic_arr.push("Segment Analytics");}
                 if(pa_feild!="#" && pa_feild!="" && !hasCls && data_href=='ampforwp-Piwik-switch'){ analytic_arr.push("Matomo Analytics");}
@@ -1424,6 +1543,7 @@ jQuery(document).ready(function($) {
     });
      function ampforwp_check_analytics(data_href){
         var ga_field       = $('#ga-feild').val();
+        var ga_field_gtm       = $('#amp-gtm-id').val();
         var amp_fb_pixel_id = $('#amp-fb-pixel-id').val();
         var sa_feild = $('#sa-feild').val();
         var pa_feild = $('#pa-feild').val();
@@ -1452,6 +1572,18 @@ jQuery(document).ready(function($) {
                 if(checked){
                    $('input[data-id="'+data_href+'"]').click();
                    $('[name="redux_builder_amp['+data_href+']"]').val(0);
+                }
+            }
+            }else if(data_href=='amp-use-gtm-option'){
+            if(ga_field_gtm!=""){
+                if(!checked){
+                    $('input[data-id="'+data_href+'"]').click();
+                    $('[name="redux_builder_amp['+data_href+']"]').val(1);
+                }
+            }else if(ga_field_gtm==""){
+                if(checked){
+                    $('input[data-id="'+data_href+'"]').click();
+                    $('[name="redux_builder_amp['+data_href+']"]').val(0);
                 }
             }
         }else if(data_href=='amp-fb-pixel'){
@@ -2103,12 +2235,12 @@ function Drawer(drawerElem) {
                                 '<p class="mb-msg">What view would you prefer?</p>'+
                                 '<div class="e-f-btns">'+
                                     '<div class="option-button b1 amp-opt-view" id="amp-opt-easy-view">'+
-                                        '<h2>Easy</h2>'+
+                                        '<h2>Basic</h2>'+
                                         '<div class="e-img"></div>'+
                                         '<p>For Beginers</p>'+
                                     '</div>'+
                                     '<div class="option-button b2 amp-opt-view"  id="amp-opt-full-view">'+
-                                        '<h2>Full</h2>'+
+                                        '<h2>Advance</h2>'+
                                         '<div class="f-img"></div>'+
                                         '<p>For Experts</p>'+     
                                     '</div>'+  
@@ -2160,10 +2292,10 @@ function Drawer(drawerElem) {
          var opt_type = 0;
          if(id=='amp-opt-easy-view' || id=='radio-c'){
             opt_type = 1;
-            $(".amp-full-view-options").slideUp();
+            $(".amp-full-view-options").slideUp(0);
          }else if(id=='amp-opt-full-view' || id=='radio-d'){
             opt_type = 2;
-            $(".amp-full-view-options").slideDown();
+            $(".amp-full-view-options").slideDown(0);
          }
          amp_left_sub_menu_opt_hs(opt_type)
          $.ajax({
@@ -2204,14 +2336,30 @@ function Drawer(drawerElem) {
         amp_options_hide_show(thisid);
     });
      $('.ux-setup-icon').on('mouseover', function (event) {
+        var amp_setup_pending_string = '';
+        $(".amp-ux-valid-require").each(function(){
+             if($(this).children().hasClass('btn-red')){
+               amp_setup_pending_string += $(this).parent('.amp-ux-elem-field').children('.amp-ux-elem-title').html()+", ";
+             }
+        });
+        amp_setup_pending_string = amp_setup_pending_string.replace(/,\s*$/, "");
         if($(this).hasClass('amp-ux-warning-okay')){
-            $(".setup-tt").html("Your setup is now completed. Enjoy the better AMP Experience.");
+            $(".setup-tt").html("Your setup is now completed.");
         }else{
-            $(".setup-tt").html("Your setup is not completed. Please setup for better AMP Experience.");
+            $(".setup-tt").html('Your setup is not completed.<br/>Please setup <i>"'+amp_setup_pending_string+'"</i> section for better AMP Experience.');
         }
         $('.ampforwp-setup-not-tt').css({'visibility':'visible'});
     }).on('mouseout', function (event) {
        $('.ampforwp-setup-not-tt').css({'visibility':'hidden'});
+    });
+     $('.ux-setup-icon').on('click', function(){
+        $(".amp-ux-valid-require").each(function(){
+             if($(this).children().hasClass('btn-red')){
+               $(this).parent('.amp-ux-elem-field').parent('.amp-ux-section-field').css({'box-shadow': '0px 0px 5px black','padding-left': '15px','padding-right': '15px'});
+
+             }
+        });
+        setTimeout(function(){ $(".amp-ux-valid-require").parent('.amp-ux-elem-field').parent('.amp-ux-section-field').removeAttr('style'); }, 500);
     });
 /* Hamburger Library */
 function DrawerIcon(icon) {

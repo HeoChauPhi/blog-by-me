@@ -51,7 +51,6 @@ function ampforwp_pagebuilder_header_html_output(){
 	$previousData = isset($previousData[0])? $previousData[0]: null;
 	$ampforwp_pagebuilder_enable = get_post_meta($postId,'ampforwp_page_builder_enable', true);
 	if($previousData!="" && $ampforwp_pagebuilder_enable=='yes'){
-		$previousData = (str_replace("'", "", $previousData));
 		$previousData = json_decode($previousData,true);
 		if(isset($previousData['settingdata']['scripts_data']) && $previousData['settingdata']['scripts_data']!=""){
 			echo $previousData['settingdata']['scripts_data']; // nothing to escaped
@@ -71,7 +70,6 @@ function amp_pagebuilder_script_loader($scriptData){
 	$previousData = isset($previousData[0])? $previousData[0]: null;
 	$ampforwp_pagebuilder_enable = get_post_meta($postId,'ampforwp_page_builder_enable', true);
 	if($previousData!="" && $ampforwp_pagebuilder_enable=='yes'){
-		$previousData = (str_replace("'", "", $previousData));
 		$previousData = json_decode($previousData,true);
 		if(count($previousData['rows'])>0){
 			foreach ($previousData['rows'] as $key => $rowsData) {
@@ -141,7 +139,7 @@ function amp_pagebuilder_content_styles(){
 
 	$completeCssOfPB .= '.amp_pb{display: inline-block;width: 100%;}
 .row{display: inline-flex;width: 100%;}
-.col-2{width:50%;float:left;}
+.col-2{ width: calc(50% - 5px);float:left;}
 .col-2-wrap .col-2:nth-child(1){
 	padding-right:5px;
 }
@@ -166,7 +164,6 @@ function amp_pagebuilder_content_styles(){
 ';
 
 		add_filter('ampforwp_body_class', 'bodyClassForAMPPagebuilder',10,2);
-		$previousData = (str_replace("'", "", $previousData));
 		$previousData = json_decode($previousData,true);
 		if(count($previousData['rows'])>0){
 
@@ -586,7 +583,6 @@ function amppb_post_content($content){
 
 
 		$html ="";
-		$previousData = (str_replace("'", "", $previousData));
 		$previousData = json_decode($previousData,true);
 		//Call Sorting for rows 
 		if(count($previousData['rows'])>0){
@@ -748,7 +744,7 @@ function ampforwp_rowData($container,$col,$moduleTemplate){
 														 $imageUrl, 
 														$repeaterFrontTemplate
 													);
-											if(strpos($repeaterFrontTemplate, '{{'.$moduleField['name'].'-thumbnail}}')!==false){
+											if(strpos($repeaterFrontTemplate, '{{'.$moduleField['name'].'-thumbnail}}')!==false && isset($replace[0])){
 												$imageDetails = ampforwp_get_attachment_id( $replace[0], 'thumbnail');
 												$imageUrl = isset($imageDetails[0])? $imageDetails[0] : '';
 												$repeaterFrontTemplate = str_replace(
@@ -869,6 +865,9 @@ function ampforwp_rowData($container,$col,$moduleTemplate){
 								'post_status'=> 'publish',
 								'post_type' => $fieldValues['post_type_selection']
 								);
+						if($fieldValues['pagination'] == 0){
+							array_push($args, "no_found_rows", true);
+						}
 						if ( (isset($fieldValues['taxonomy_selection']) && 'recent_option' !== $fieldValues['taxonomy_selection']) &&  (isset($fieldValues['category_selection']) && 'recent_option' !== $fieldValues['category_selection'])) {
 							$args['tax_query'] = array(
 									array(
@@ -1104,6 +1103,7 @@ function ampforwp_get_attachment_id( $url , $imagetype='full') {
 				'post_type'   => 'attachment',
 				'post_status' => 'inherit',
 				'fields'      => 'ids',
+				'no_found_rows' => true,
 				'meta_query'  => array(
 					array(
 						'value'   => $file,
@@ -1112,6 +1112,7 @@ function ampforwp_get_attachment_id( $url , $imagetype='full') {
 					),
 				)
 			);
+			$query_args = apply_filters('ampforwp_attachment_id_query_args' , $query_args );
 			$query = new WP_Query( $query_args );
 			if ( $query->have_posts() ) {
 				foreach ( $query->posts as $post_id ) {

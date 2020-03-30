@@ -8,7 +8,9 @@ class Polylang_TT_access
 {
 
     protected $plugin_name = 'Theme and plugin translation for Polylang';
-    private static $instance = false;
+
+    /** @var Polylang_TT_access|null */
+    private static $instance = null;
 
     /**
      * Private constructor.
@@ -19,6 +21,7 @@ class Polylang_TT_access
 
     /**
      * Singleton.
+     * @return Polylang_TT_access
      */
     public static function get_instance()
     {

@@ -18,9 +18,12 @@ function ampforwp_framework_get_related_posts($argsdata=array()){
 				<ul class="clearfix">
 					<?php ampforwp_related_post(); ?>
 					<?php
+					$current_id = ampforwp_get_the_ID();
 				    while( $my_query->have_posts() ) {
 					    $my_query->the_post();
-					    
+					    if(ampforwp_get_the_ID()==$current_id){
+			            	continue;
+			            }
 					?>
 						<li class="<?php if ( has_post_thumbnail() ) { echo'has_thumbnail'; } else { echo 'no_thumbnail'; } ?>">
 				            <?php
@@ -56,19 +59,19 @@ function ampforwp_related_post_loop_query(){
 			$orderby = 'rand';
 		}
 	$args=array(
-	'post_type'	   => get_post_type($post),
-    'post__not_in' => array($post->ID),
-    'posts_per_page'=> $int_number_of_related_posts,
-    'orderby' => $orderby,
-    'ignore_sticky_posts'=>1,
-	'has_password' => false ,
-	'post_status'=> 'publish',
-	'no_found_rows'	=> true,
-	'meta_query' => array(
-		array(
-			'key'        => 'ampforwp-amp-on-off',
-			'value'      => 'default',
-		))
+		'post_type'	   => get_post_type($post),
+	    'posts_per_page'=> $int_number_of_related_posts,
+	    'orderby' => $orderby,
+	    'ignore_sticky_posts'=>1,
+		'has_password' => false ,
+		'post_status'=> 'publish',
+		'no_found_rows'	=> true,
+		'meta_query' => array(
+			array(
+				'value'   => 'hide-amp',
+				'compare' => '!='
+			)
+		)
 	);
 	if($redux_builder_amp['ampforwp-single-select-type-of-related']==2 && 'post' == $post->post_type ){
 	    $categories = get_the_category($post->ID);
@@ -148,15 +151,27 @@ function ampforwp_get_relatedpost_image( $imagetype ='thumbnail', $data=array() 
 					$width 	= $width * $resolution;
 					$height = $height * $resolution;
 				}
+				$image_dimensions = array();
+				$image_dimensions['width'] = $width;
+				$image_dimensions['height'] = $height;
+				$image_dimensions = apply_filters('ampforwp_related_post_image_size', $image_dimensions);
+				$width = $image_dimensions['width'];
+				$height = $image_dimensions['height'];
 				$thumb_url_array = ampforwp_aq_resize( $thumb_url, $width, $height, true, false, true ); //resize & crop the image
 				$thumb_url = $thumb_url_array[0];
 				$thumb_width = $thumb_url_array[1];
 				$thumb_height = $thumb_url_array[2];
+				$thumb_alt = '';
+				$thumb_alt = get_post_meta ( get_post_thumbnail_id(), '_wp_attachment_image_alt', true );
 			}
 	    
-	     if ( $thumb_url && $show_image ) { ?>
-	    	<amp-img src="<?php echo esc_url( $thumb_url ); ?>" width="<?php echo esc_attr($thumb_width); ?>" height="<?php echo esc_attr($thumb_height); ?>" layout="responsive"></amp-img>
-		<?php }
+	     if ( $thumb_url && $show_image ) { 
+	    	$img_content = '<amp-img src="'.esc_url( $thumb_url ).'" alt="'.esc_attr($thumb_alt).'" width="'.esc_attr($thumb_width).'" height="'.esc_attr($thumb_height).'" layout="responsive"></amp-img>';
+	    	if(function_exists('ampforwp_add_fallback_element')){
+                $img_content = ampforwp_add_fallback_element($img_content,'amp-img');
+            }
+	    	echo $img_content;
+		 }
 		} ?>
     </a>
 <?php

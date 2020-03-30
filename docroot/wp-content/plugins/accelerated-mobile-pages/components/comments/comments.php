@@ -31,8 +31,10 @@ function ampforwp_framework_get_comments(){
 					if ( ampforwp_is_front_page() ) {
 						$postID = ampforwp_get_frontpage_id();
 					}
+					$comment_order = get_option( 'comment_order' );
 					$comments = get_comments(array(
 							'post_id' => $postID,
+							'order' => esc_attr($comment_order),
 							'status' => 'approve' //Change this to the type of comments to be displayed
 					));
 					
@@ -50,23 +52,23 @@ function ampforwp_framework_get_comments(){
 									?>
 									<li id="li-comment-<?php comment_ID() ?>"
 									<?php comment_class(); ?> >
-										<article id="comment-<?php comment_ID(); ?>" class="comment-body">
-											<footer class="comment-meta">
+										<article id="comment-<?php comment_ID(); ?>" class="cmt-body">
+											<footer class="cmt-meta">
 											<?php if($comment_author_img_url){ ?>
-			         							<amp-img src="<?php echo esc_url($comment_author_img_url); ?>" width="40" height="40" layout="fixed" class="comment-author-img"></amp-img>
+			         							<amp-img src="<?php echo esc_url($comment_author_img_url); ?>" width="40" height="40" layout="fixed" class="cmt-author-img"></amp-img>
 			         						<?php } ?>
-												<div class="comment-author vcard">
+												<div class="cmt-author vcard">
 													 <?php
 													 printf('<b class="fn">%s</b> <span class="says">'.esc_html(ampforwp_translation(ampforwp_get_setting('amp-translator-says-text'),'says')).':</span>', get_comment_author_link()) ?>
 												</div>
-												<div class="comment-metadata">
+												<div class="cmt-metadata">
 													<a href="<?php echo htmlspecialchars( trailingslashit( get_comment_link( $comment->comment_ID ) ) ) ?>">
 														<?php printf( ampforwp_translation( ('%1$s '. ampforwp_translation($redux_builder_amp['amp-translator-at-text'],'at').' %2$s'), '%1$s at %2$s') , get_comment_date(),  get_comment_time())?>
 													</a>
 													<?php edit_comment_link(  ampforwp_translation( $redux_builder_amp['amp-translator-Edit-text'], 'Edit' )  ) ?>
 												</div>
 											</footer>
-											<div class="comment-content">
+											<div class="cmt-content">
 						                        <?php
 						                          	$comment_content = get_comment_text();
 						                        	$comment_content = wpautop( $comment_content );
@@ -105,6 +107,9 @@ function ampforwp_framework_get_comments(){
 									'echo' 			=> false,
 									'add_fragment' 	=> '#comments',		
 								);
+								if(true == ampforwp_get_setting('ampforwp-amp-takeover')){
+									$args['base'] = get_the_permalink().'comment-page-%#%';
+								}
 						    if ( paginate_comments_links($args) ) { ?>
 								<div class="cmts-wrap">
 					     			<?php echo paginate_comments_links( $args ); ?>
@@ -115,11 +120,15 @@ function ampforwp_framework_get_comments(){
 					} // if ( $comments )
 					if ( ! defined( 'AMP_COMMENTS_VERSION' ) ) { ?>
 						<div class="amp-comment-button">
-							<?php if ( comments_open($postID) ) { ?>
-						    	<a href="<?php echo ampforwp_comment_button_url(); ?>" title="<?php echo ampforwp_get_setting('amp-translator-leave-a-comment-text')?>" rel="nofollow"><?php echo esc_html(ampforwp_translation( $redux_builder_amp['amp-translator-leave-a-comment-text'], 'Leave a Comment' ) ); ?></a> <?php
-							}?>
-						</div> <?php 
-					}?>
+							<?php if ( comments_open($postID) ) {
+								$nofollow = '';
+								if(true ==ampforwp_get_setting('ampforwp-nofollow-comment-btn')){
+									$nofollow = 'rel=nofollow';
+								}
+							 ?>
+							 <a href="<?php echo ampforwp_comment_button_url(); ?>" title="<?php echo ampforwp_get_setting('amp-translator-leave-a-comment-text')?>" <?php echo esc_html($nofollow) ?> ><?php echo esc_html(ampforwp_translation( ampforwp_get_setting('amp-translator-leave-a-comment-text'), 'Leave a Comment' ) ); ?></a> <?php } ?>
+						</div>	 
+				<?php } ?>
 				</div>
 			<?php do_action('ampforwp_after_comment_hook');
 		}
@@ -225,10 +234,16 @@ function ampforwp_framework_get_vuukle_comments(){
 	$srcUrl = add_query_arg('title' , urlencode($post->post_title), $srcUrl);
 	$srcUrl = add_query_arg('img' , esc_url($img), $srcUrl);
 	$srcUrl = add_query_arg('tags' , urlencode($tag_name), $srcUrl);
+	if(ampforwp_get_setting('ampforwp-vuukle-comments-emoji')==false){
+		$srcUrl = add_query_arg('emotes' , 'false', $srcUrl);
+	}
+	$consent = '';
+	if(ampforwp_get_data_consent()){
+		$consent = 'data-block-on-consent ';
+    } 
+ 	$vuukle_html = '<amp-iframe width="600" height="350" '.esc_attr($consent).'layout="responsive" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" resizable frameborder="0" src="'.esc_url($srcUrl).'">
 
- 	$vuukle_html = '<amp-iframe width="600" height="350" layout="responsive" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" resizable frameborder="0" src="'.esc_url($srcUrl).'">
-
-		<div overflow tabindex="0" role="button" aria-label="Show comments">'.esc_html__('Show comments','accelerated-mobile-pages').'</div>';
+		<div overflow tabindex="0" role="button" aria-label="Show comments">'.esc_html__('Show comments','accelerated-mobile-pages').'</div></amp-iframe>';
 	echo $vuukle_html; // escaped above
 }
 

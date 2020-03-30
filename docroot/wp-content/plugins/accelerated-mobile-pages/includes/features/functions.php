@@ -31,12 +31,22 @@ function ampforwp_add_admin_styling($hook_suffix){
     wp_enqueue_style( 'ampforwp_admin_css' );
 
     // Admin area scripts file
-    wp_register_script( 'ampforwp_admin_js', untrailingslashit(AMPFORWP_PLUGIN_DIR_URI) . '/includes/admin-script.js', false, AMPFORWP_VERSION );
+    wp_register_script( 'ampforwp_admin_js', untrailingslashit(AMPFORWP_PLUGIN_DIR_URI) . '/includes/admin-script.js', array('wp-color-picker'), AMPFORWP_VERSION );
 
     // Localize the script with new data
     $redux_data = array();
     if( current_user_can("manage_options") && $hook_suffix=='toplevel_page_amp_options' ){
         $redux_data = $redux_builder_amp;
+        wp_dequeue_script( 'insert-post-adschart-admin' );
+        remove_all_actions('admin_notices');
+        add_action('admin_notices', 'ampforwp_dev_mode_notice');
+        add_action('admin_notices', 'ampforwp_plugins_manager_notice');
+        add_action('admin_notices', 'ampforwp_ampwptheme_notice');
+        add_action('admin_notices', 'ampforwp_automattic_activation' );
+        add_action('admin_notices', 'ampforwp_admin_notices' );
+        add_action('admin_notices', 'ampforwp_seo_selection_notice' );
+    }else{
+        $redux_data['ampforwp-amp-takeover'] =  ampforwp_get_setting('ampforwp-amp-takeover');
     }
     if( current_user_can("manage_options") && $hook_suffix == 'options-reading.php' && 0 == $redux_builder_amp['amp-frontpage-select-option']) {
         $redux_data['frontpage'] = 'false';
@@ -60,8 +70,8 @@ function ampforwp_add_admin_styling($hook_suffix){
     $redux_data = apply_filters("ampforwp_custom_localize_data", $redux_data);
     wp_localize_script( 'ampforwp_admin_js', 'redux_data', $redux_data );
     wp_localize_script( 'ampforwp_admin_js', 'ampforwp_nonce', wp_create_nonce('ampforwp-verify-request') );
-    wp_enqueue_script( 'ampforwp_admin_js' );
     wp_enqueue_script( 'wp-color-picker' );
+    wp_enqueue_script( 'ampforwp_admin_js' );
 }
 // 96. ampforwp_is_front_page() ampforwp_is_home() and ampforwp_is_blog is created
 function ampforwp_is_front_page(){
@@ -91,7 +101,7 @@ function ampforwp_is_front_page(){
         return true;
 
      // TRUE: When we have " A static page" in reading settings and custom frontpage in amp
-    if ( 'page' == get_option( 'show_on_front') && (is_home() || is_front_page()) && $get_front_page_reading_settings && $get_amp_homepage_settings && $get_custom_frontpage_settings && $get_amp_custom_frontpage_id) {
+    if ( 'page' == get_option( 'show_on_front') && (is_home() || is_front_page()) && $get_front_page_reading_settings && $get_amp_homepage_settings && $get_custom_frontpage_settings && !empty($get_amp_custom_frontpage_id)) {
 
         $current_page = get_queried_object();
         if ( $current_page ) {
@@ -784,11 +794,10 @@ function ampforwp_url_controller( $url, $nonamp = '' ) {
     }
     $get_permalink_structure = get_option('permalink_structure');
     if ( $get_permalink_structure ) {
-        if ( isset($redux_builder_amp['amp-core-end-point']) && 1 == $redux_builder_amp['amp-core-end-point'] ) {
-                $new_url = trailingslashit($url);
-                $new_url = $new_url.'?'.AMPFORWP_AMP_QUERY_VAR;
-                //$new_url = add_query_arg(AMPFORWP_AMP_QUERY_VAR,'1', $new_url);
-            }
+        if(true == ampforwp_get_setting('amp-core-end-point')){
+            $new_url = user_trailingslashit($url);
+            $new_url = add_query_arg( 'amp', '', $new_url );
+        }
         else {
                 $new_url = user_trailingslashit( trailingslashit( $url ) . AMPFORWP_AMP_QUERY_VAR);
             // WPML COMPATIBILITY FOR LOOP 
@@ -1064,7 +1073,7 @@ add_action("redux/options/redux_builder_amp/saved",'ampforwp_menu_transient_on_s
 // Protocol Remover
 if ( ! function_exists('ampforwp_remove_protocol') ) {
     function ampforwp_remove_protocol($url){
-        $url = preg_replace('#^https?://#', '', $url);
+        $url = preg_replace('#^https?://#', '//', $url);
         return $url;
     }
 }
@@ -1082,23 +1091,23 @@ if ( ! function_exists('ampforwp_sanitize_i_amphtml') ) {
 function checkAMPforPageBuilderStatus($postId){
     global $post;
     $postId = (is_object($post)? $post->ID: '');
-  
+    $response =false;
     if( ampforwp_is_front_page() ){
         $postId = ampforwp_get_frontpage_id();
     }
     if ( empty(  $postId ) ) {
         $response = false;
     }else{
-      $amp_bilder = get_post_field('amp-page-builder',$post->ID);
-      $amp_pd_data = json_decode($amp_bilder);
-      $ampforwp_pagebuilder_enable = get_post_meta($postId,'ampforwp_page_builder_enable', true);
+        $amp_builder = get_post_field('amp-page-builder',$postId);
+        $amp_pd_data = json_decode($amp_builder);
+        $ampforwp_pagebuilder_enable = get_post_meta($postId,'ampforwp_page_builder_enable', true);
         if( $ampforwp_pagebuilder_enable=='yes' && true == ampforwp_get_setting('ampforwp-pagebuilder') && ( function_exists('amppb_post_content') && !empty($amp_pd_data->rows))){
             $response = true;
         }else{
             $response = false;
         }
-      $response = apply_filters( 'ampforwp_pagebuilder_status_modify', $response, $postId );
     }
+    $response = apply_filters( 'ampforwp_pagebuilder_status_modify', $response, $postId );
     return $response;
 }
 
@@ -1155,7 +1164,7 @@ if( ! function_exists( 'ampforwp_additional_style_carousel_caption' ) ){
       box-sizing: border-box;
     }
     .collapsible-captions .amp-carousel-container  {position: relative; width: 100%;}
-    .collapsible-captions amp-img img {object-fit: contain; }
+    .collapsible-captions amp-img img {object-fit: fill; }
     .collapsible-captions figure { margin: 0; padding: 0; }
     .collapsible-captions figcaption { position: absolute; bottom: 0;width: 100%;
       max-height: var(--caption-height);margin-bottom:0;
@@ -1187,14 +1196,17 @@ if( ! function_exists( 'ampforwp_additional_style_carousel_caption' ) ){
  }
 
  function ampforwp_role_based_access_options(){
+    $user_role = '';
+    $user_role = true;
     $currentUser = wp_get_current_user();
     $amp_roles = ampforwp_get_setting('ampforwp-role-based-access');
     $currentuserrole = (array) $currentUser->roles;
     $hasrole = array_intersect( $currentuserrole, $amp_roles );
     if( empty($hasrole)){
-        return false;
+        $user_role = false;
     }
-    return true;
+    $user_role = apply_filters('ampforwp_modify_user_access_role', $user_role, $currentUser, $amp_roles, $hasrole );
+    return $user_role;
 }
 if(!function_exists('ampforwp_sassy_share_icons')){
     function ampforwp_sassy_share_icons($ampforwp_the_content) {
@@ -1231,5 +1243,58 @@ if(!function_exists('ampforwp_sassy_share_icons')){
             }
         }
         return $ampforwp_the_content;
+    }
+}
+
+// Notice for Dev Mode
+function ampforwp_dev_mode_notice(){ 
+    global $redux_builder_amp;
+    $message = '';
+    if(isset($redux_builder_amp['ampforwp-development-mode']) && $redux_builder_amp['ampforwp-development-mode']) {
+            $message =  ' Please turn off Development mode, when you are done.';?>
+                    
+            <div class="notice notice-success is-dismissible amp-dev-notice" style="position:relative;
+            height: 40px; overflow: hidden; ">
+                <div class="ampforwp-dev-mode-message" style="margin-top: 10px;">
+                    <?php echo '<strong>'. esc_html__('AMP Dev mode is Enabled!', 'accelerated-mobile-pages').'</strong>'. esc_html__($message, 'accelerated-mobile-pages'); ?>             
+                </div>  
+            </div>
+<?php }
+}
+
+function ampforwp_seo_selection_notice() {
+    if('' != ampforwp_get_setting('ampforwp-seo-selection')){
+        return;
+    }
+    $seo = '';
+    if(class_exists('WPSEO_Options')){
+        $seo = 'Yoast SEO';
+    }
+    if(class_exists('All_in_One_SEO_Pack')){
+        $seo = 'All in One SEO';
+    }
+    if(function_exists( 'the_seo_framework' )){
+        $seo = 'The SEO Framework';
+    }
+    if(function_exists('genesis_theme_support')){
+        $seo = 'Genesis';
+    }
+    if(function_exists('qode_header_meta')){
+        $seo = 'Bridge Qode SEO';
+    }
+    if(defined( 'RANK_MATH_FILE' )){
+        $seo = 'Rank Math SEO';
+    }
+    if(defined( 'SQ_ALL_PATTERNS' )){
+        $seo = 'Squirrly SEO';
+    }
+    if(class_exists('Smartcrawl_Loader')){
+        $seo = 'Smartcrawl SEO';
+    }
+    if(function_exists('seopress_activation')){
+        $seo = 'SEO Press';
+    }
+    if(!empty($seo)){
+        echo sprintf(('<div class="notice notice-error"><p>%s <a href="%s">%s</a></p></div>'), esc_html__('The configuration of AMPforWP and '.esc_html($seo).' plugin is seems incorrect. Please go to AMPforWP plugin settings and select '.esc_html($seo).' from SEO Plugin Integration or ','accelerated-mobile-pages'),esc_url(admin_url('admin.php?page=amp_options&tab=5')),esc_html__('Click Here','accelerated-mobile-pages'));
     }
 }

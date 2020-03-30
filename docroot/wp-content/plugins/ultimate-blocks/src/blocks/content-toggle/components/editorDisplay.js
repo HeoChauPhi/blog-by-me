@@ -11,7 +11,7 @@ const { createBlock } = wp.blocks;
 
 const { InnerBlocks, InspectorControls, PanelColorSettings } =
 	wp.blockEditor || wp.editor;
-const { PanelBody, PanelRow, FormToggle } = wp.components;
+const { PanelBody, PanelRow, FormToggle, SelectControl } = wp.components;
 
 export class OldPanelContent extends Component {
 	constructor(props) {
@@ -182,7 +182,15 @@ export class PanelContent extends Component {
 	}
 	render() {
 		const {
-			attributes,
+			attributes: {
+				collapsed,
+				theme,
+				titleColor,
+				blockID,
+				hasFAQSchema,
+				titleTag,
+				preventCollapse
+			},
 			setAttributes,
 			className,
 			isSelected,
@@ -197,8 +205,6 @@ export class PanelContent extends Component {
 			selectedBlock,
 			block
 		} = this.props;
-
-		const { collapsed, theme, titleColor, blockID, hasFAQSchema } = attributes;
 
 		const panels = this.getPanels();
 
@@ -231,6 +237,23 @@ export class PanelContent extends Component {
 					collapsed: !panel.attributes.collapsed
 				})
 			);
+			if (!collapsed) {
+				setAttributes({ preventCollapse: false });
+				panels.forEach(panel =>
+					updateBlockAttributes(panel.clientId, {
+						preventCollapse: false
+					})
+				);
+			}
+		};
+
+		const onPreventCollapseChange = _ => {
+			setAttributes({ preventCollapse: !preventCollapse });
+			panels.forEach(panel =>
+				updateBlockAttributes(panel.clientId, {
+					preventCollapse: !panel.attributes.preventCollapse
+				})
+			);
 		};
 
 		//Detect if one of the child blocks has received a command to add another child block
@@ -238,9 +261,11 @@ export class PanelContent extends Component {
 			const { index, newBlockPosition } = newBlockTarget[0].attributes;
 			insertBlock(
 				createBlock("ub/content-toggle-panel-block", {
-					theme: theme,
-					collapsed: collapsed,
-					titleColor: titleColor
+					theme,
+					collapsed,
+					titleColor,
+					titleTag,
+					preventCollapse
 				}),
 				newBlockPosition === "below" ? index + 1 : index,
 				block.clientId
@@ -309,7 +334,9 @@ export class PanelContent extends Component {
 					hasFAQSchema,
 					theme,
 					titleColor,
-					collapsed
+					collapsed,
+					titleTag,
+					preventCollapse
 				})
 			);
 			setState({
@@ -317,7 +344,9 @@ export class PanelContent extends Component {
 					theme,
 					collapsed,
 					hasFAQSchema,
-					titleColor
+					titleColor,
+					titleTag,
+					preventCollapse
 				})
 			});
 		} else {
@@ -388,6 +417,19 @@ export class PanelContent extends Component {
 								onChange={onCollapseChange}
 							/>
 						</PanelRow>
+						{!collapsed && (
+							<PanelRow>
+								<label htmlFor="ub-content-toggle-state">
+									{__("Prevent collapse")}
+								</label>
+								<FormToggle
+									id="ub-content-toggle-state"
+									label={__("Prevent collapse")}
+									checked={preventCollapse}
+									onChange={onPreventCollapseChange}
+								/>
+							</PanelRow>
+						)}
 					</PanelBody>
 					<PanelBody title={__("FAQ Schema")} initialOpen={true}>
 						<PanelRow>
@@ -398,7 +440,7 @@ export class PanelContent extends Component {
 								id="ub-content-toggle-faq-schema"
 								label={__("Enable FAQ Schema")}
 								checked={hasFAQSchema}
-								onChange={() =>
+								onChange={_ =>
 									setAttributes({
 										hasFAQSchema: !hasFAQSchema
 									})
@@ -406,6 +448,35 @@ export class PanelContent extends Component {
 							/>
 						</PanelRow>
 					</PanelBody>
+					<div
+						style={{
+							display: "grid",
+							gridTemplateColumns: "5fr 1fr",
+							padding: "0 16px"
+						}}
+					>
+						<p>{__("Select Heading Tag", "ultimate-blocks")}</p>
+						<SelectControl
+							options={[
+								{ value: "h1", label: __("H1", "ultimate-blocks") },
+								{ value: "h2", label: __("H2", "ultimate-blocks") },
+								{ value: "h3", label: __("H3", "ultimate-blocks") },
+								{ value: "h4", label: __("H4", "ultimate-blocks") },
+								{ value: "h5", label: __("H5", "ultimate-blocks") },
+								{ value: "h6", label: __("H6", "ultimate-blocks") },
+								{ value: "p", label: __("P", "ultimate-blocks") }
+							]}
+							value={titleTag}
+							onChange={titleTag => {
+								setAttributes({ titleTag });
+								panels.forEach(panel =>
+									updateBlockAttributes(panel.clientId, {
+										titleTag
+									})
+								);
+							}}
+						/>
+					</div>
 				</InspectorControls>
 			),
 			<div className={className}>

@@ -14,11 +14,17 @@ amp_header(); ?>
 		 	<?php amp_title(); ?>
 		<?php } ?>
 		<?php } // Level up Condition ends here?>
-		<?php if ( true == ampforwp_get_setting('featured_image_swift_page') && ampforwp_has_post_thumbnail() ) { ?>
+		</div>
+		<?php if ( true == ampforwp_get_setting('featured_image_swift_page') && ampforwp_has_post_thumbnail() && !checkAMPforPageBuilderStatus(ampforwp_get_the_ID()) ) { ?>
 				<div class="sf-img">
 					<?php amp_featured_image();?>
 				</div>
-				<?php } ?>
+				<?php }elseif (true == ampforwp_get_setting('featured_image_swift_page') && true == ampforwp_get_setting('featured_image_swift_page_builder')) {?>
+				<div class="sf-img">
+					<?php amp_featured_image();?>
+				</div>
+			<?php } ?>
+		<div <?php if(!checkAMPforPageBuilderStatus(ampforwp_get_the_ID())){ ?>class="cntr"<?php } ?>>	
        <div class="pg">
        		<?php if (  is_page() && true == ampforwp_get_setting('ampforwp-page-social') && 'above-content' ==  ampforwp_get_setting('swift-social-position') ){
 							ampforwp_swift_social_icons(); 
@@ -55,6 +61,7 @@ amp_header(); ?>
 						<?php if(isset($redux_builder_amp['gbl-sidebar']) && $redux_builder_amp['gbl-sidebar'] == '1'){ ?>
 							<div class="sdbr-right"> <?php 
 								$sanitized_sidebar = ampforwp_sidebar_content_sanitizer('swift-sidebar');
+								$sidebar_output = '';
 								if ( $sanitized_sidebar) {
 									$sidebar_output = $sanitized_sidebar->get_amp_content();
 									$sidebar_output = apply_filters('ampforwp_modify_sidebars_content',$sidebar_output);
@@ -69,6 +76,7 @@ amp_header(); ?>
 				<div class="sdbr-right" style="float: right;" >
 					<?php 
 					$sanitized_sidebar = ampforwp_sidebar_content_sanitizer('swift-sidebar');
+					$sidebar_output = '';
 					if ( $sanitized_sidebar) {
 						$sidebar_output = $sanitized_sidebar->get_amp_content();
 						$sidebar_output = apply_filters('ampforwp_modify_sidebars_content',$sidebar_output);

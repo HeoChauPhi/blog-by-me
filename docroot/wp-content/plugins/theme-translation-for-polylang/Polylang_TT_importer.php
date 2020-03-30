@@ -1,5 +1,4 @@
 <?php
-
 defined('ABSPATH') or die('No script kiddies please!');
 
 class Polylang_TT_importer

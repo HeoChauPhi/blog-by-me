@@ -9,7 +9,7 @@ require_once( AMP__VENDOR__DIR__ . '/includes/embeds/class-amp-base-embed-handle
 
 class AMP_Rev_Slider_Embed_Handler extends AMPforWP\AMPVendor\AMP_Base_Embed_Handler {
 	private static $script_slug = 'amp-carousel';
-	private static $script_src = 'https://cdn.ampproject.org/v0/amp-carousel-0.1.js';
+	private static $script_src = 'https://cdn.ampproject.org/v0/amp-carousel-0.2.js';
 
 	public function register_embed() {
 		add_shortcode( 'rev_slider', array( $this, 'shortcode' ) );
@@ -70,10 +70,18 @@ class AMP_Rev_Slider_Embed_Handler extends AMPforWP\AMPVendor\AMP_Base_Embed_Han
 					$img_data = wp_get_attachment_metadata( $slide->getImageID() );
 					$url = $slide->getImageUrl();
 					$attachment_id = $slide->getImageID();
+					$width = 480;
+					$height = 270;
+					if(isset($img_data['width'])){
+						$width = $img_data['width'];
+					}
+					if(isset($img_data['height'])){
+						$height = $img_data['height'];
+					}	
 					$urls[] = apply_filters('amp_gallery_image_params', array(
 						'url' => $url,
-						'width' => intval($img_data['width']),
-						'height' => intval($img_data['height']),
+						'width' => intval($width),
+						'height' => intval($height),
 						'bgtype' => esc_attr($bgtype)
 					),$attachment_id);
 				}elseif( $bgtype == 'youtube' ){
@@ -131,10 +139,18 @@ class AMP_Rev_Slider_Embed_Handler extends AMPforWP\AMPVendor\AMP_Base_Embed_Han
 						'bgtype' => esc_attr($bgtype)
 					),$image_id);
 				}elseif( $bgtype == 'image'){
+					$width = 480;
+					$height = 270;
+					if(isset($img_data['width'])){
+						$width = $img_data['width'];
+					}
+					if(isset($img_data['height'])){
+						$height = $img_data['height'];
+					}
 					$urls[] = apply_filters('amp_gallery_image_params', array(
 						'url' => $url,
-						'width' => intval($img_data['width']),
-						'height' => intval($img_data['height']),
+						'width' => intval($width),
+						'height' => intval($height),
 						'bgtype' => esc_attr($bgtype)
 					),$image_id);
 				}elseif( $bgtype == 'youtube' ){
@@ -330,6 +346,8 @@ class AMP_Rev_Slider_Embed_Handler extends AMPforWP\AMPVendor\AMP_Base_Embed_Han
 								'width' => $this->args['width'],
 								'height' => $this->args['height'],
 								'type' => 'slides',
+								'loop'	=>'',
+								'autoplay'	=>'',
 								'layout' => 'responsive',
 								'class'  => 'collapsible-captions',
 								'id' => 'carousel-with-carousel-preview-'.$r

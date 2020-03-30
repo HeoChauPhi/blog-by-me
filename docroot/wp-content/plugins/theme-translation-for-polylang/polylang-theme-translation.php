@@ -1,7 +1,7 @@
 <?php
 /* Plugin Name: Theme and plugin translation for Polylang (TTfP)
 Description: Polylang - theme and plugin translation for WordPress
-Version: 3.2.1
+Version: 3.2.3
 Author: Marcin Kazmierski
 License: GPL2
 */
@@ -9,7 +9,6 @@ License: GPL2
 defined('ABSPATH') or die('No script kiddies please!');
 
 include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'polylang-tt-access.php';
-
 include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Polylang_TT_importer.php';
 include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Polylang_TT_exporter.php';
 include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Polylang_TT_theme.php';
@@ -55,6 +54,7 @@ class Polylang_Theme_Translation
 
     /**
      * Find strings in themes.
+     * @return array
      */
     public function run_theme_scanner()
     {
@@ -78,6 +78,7 @@ class Polylang_Theme_Translation
 
     /**
      * Find strings in plugins.
+     * @return array
      */
     public function run_plugin_scanner()
     {
@@ -107,7 +108,7 @@ class Polylang_Theme_Translation
      */
     protected function get_files_from_dir($dir_name)
     {
-        $results = array();
+        $results = [];
         $files = scandir($dir_name);
         foreach ($files as $key => $value) {
             $path = realpath($dir_name . DIRECTORY_SEPARATOR . $value);
@@ -129,7 +130,7 @@ class Polylang_Theme_Translation
      */
     protected function file_scanner($files)
     {
-        $strings = array();
+        $strings = [];
         foreach ($files as $file) {
             // find polylang functions
             preg_match_all("/[\s=\(]+pll_[_e][\s]*\([\s]*[\'\"](.*?)[\'\"][\s]*\)/s", file_get_contents($file), $matches);
@@ -141,6 +142,13 @@ class Polylang_Theme_Translation
             preg_match_all("/[\s=\(\.]+_[_e][\s]*\([\s]*[\'\"](.*?)[\'\"][\s]*,[\s]*[\'\"](.*?)[\'\"][\s]*\)/s", file_get_contents($file), $matches);
             if (!empty($matches[1])) {
                 $strings = array_merge($strings, $matches[1]);
+            }
+
+            // find wp functions: esc_html_e
+            preg_match_all("/[\s=\(\.]+esc_html_[_e][\s]*\([\s]*[\'\"](.*?)[\'\"][\s]*,[\s]*[\'\"](.*?)[\'\"][\s]*\)/s", file_get_contents($file), $matches);
+            if (!empty($matches[1])) {
+                $strings = array_merge($strings, $matches[1]);
+
             }
         }
         return $strings;
@@ -302,13 +310,22 @@ function plugins_loaded_tt_for_polylang()
     load_plugin_textdomain('polylang-tt', false, basename(__DIR__) . '/languages');
 }
 
-add_filter('gettext', 'tt_pll_gettext_filter');
-function tt_pll_gettext_filter($original)
+add_filter('gettext', 'tt_pll_gettext_filter', 1, 2);
+function tt_pll_gettext_filter($original, $text)
 {
     $translations = get_translations_for_domain('pll_string');
-    $translation = $translations->translate($original);
+
+    $tt = $translations->translate($text);
+
+    if (empty($tt) || $tt === $text) {
+        $translation = $translations->translate($original);
+    } else {
+        $translation = $translations->translate($text);
+    }
+
     if (empty($translation)) {
         return $original;
     }
+
     return $translation;
 }
